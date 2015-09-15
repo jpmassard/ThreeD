@@ -1,0 +1,51 @@
+<?php
+// +-----------------------------------------------------------------------+
+// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// +-----------------------------------------------------------------------+
+// | Copyright(C) 2014-2014 Jean-Paul MASSARD                              |
+// +-----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify  |
+// | it under the terms of the GNU General Public License as published by  |
+// | the Free Software Foundation                                          |
+// |                                                                       |
+// | This program is distributed in the hope that it will be useful, but   |
+// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
+// | General Public License for more details.                              |
+// |                                                                       |
+// | You should have received a copy of the GNU General Public License     |
+// | along with this program; if not, write to the Free Software           |
+// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
+// | USA.                                                                  |
+// +-----------------------------------------------------------------------+
+
+defined('THREED_PATH') or die('Hacking attempt!');
+
+global $template, $page, $conf;
+
+//load_language('plugin.lang', THREED_PATH);
+$page['tab'] = (isset($_GET['tab'])) ? $_GET['tab'] : 'addphoto';
+
+// tabsheet
+include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
+$tabsheet = new tabsheet();
+$tabsheet->add('addphoto', l10n('Add a 3D photo'), THREED_ADMIN . '-addphoto');
+$tabsheet->add('addvideo', l10n('Add a 3D video'), THREED_ADMIN . '-addvideo');
+$tabsheet->add('batch', l10n('Batch mode'), THREED_ADMIN . '-batch');
+$tabsheet->add('config', l10n('Configuration'), THREED_ADMIN . '-config');
+$tabsheet->select($page['tab']);
+$tabsheet->assign();
+
+
+// include page
+include(THREED_PATH . 'admin/' . $page['tab'] . '.php');
+
+// template
+$template->assign(array(
+  'THREED_PATH'=> THREED_PATH,
+  'THREED_ABS_PATH'=> dirname(__FILE__).'/',
+  'THREED_ADMIN' => THREED_ADMIN,
+  ));
+  
+$template->assign_var_from_handle('ADMIN_CONTENT', 'threed_content');
+?>

@@ -1,0 +1,15 @@
+.pwg-icon-cast {
+    background-image: url("img/ic_media_route_off_holo_light.png") ;
+}
+
+.pwg-icon-cast::before {
+	content: "\1"
+}
+a:hover .pwg-icon-cast {
+    background-image: url("img/ic_media_route_off_holo_dark.png");
+}
+
+.cast-btn-on:hover .pwg-icon-cast,
+.cast-btn-on .pwg-icon-cast {
+    background-image: url("img/ic_media_route_on_holo_dark.png");
+}
