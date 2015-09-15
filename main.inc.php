@@ -53,22 +53,24 @@ if (defined('IN_ADMIN'))
         EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/admin.inc.php');
 
 }
-// Picture view event handlers
-add_event_handler('picture_pictures_data', 'threed_prepare_picture',
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/picture.inc.php');
-
-// Cast event handlers (Currently 3D ChromeCast support only)
-add_event_handler('loc_begin_page_tail', 'add_cast_api',
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/cast.inc.php');
-add_event_handler('loc_begin_page_header', 'add_cast_btn',
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/cast.inc.php');
+else
+{
+    // Picture view event handlers
+    add_event_handler('picture_pictures_data', 'threed_prepare_picture',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/picture.inc.php');
     
-// OpenGraph event handlers (for social networks and referencement)
-add_event_handler('loc_end_page_header', 'threed_loc_end_page_header',
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/opengraph.inc.php');
-add_event_handler('loc_begin_index', 'threed_loc_begin_index',
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/opengraph.inc.php');
-
+    // Cast event handlers (Currently 3D ChromeCast support only)
+    add_event_handler('loc_begin_page_tail', 'add_cast_api',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/cast.inc.php');
+    add_event_handler('loc_begin_page_header', 'add_cast_btn',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/cast.inc.php');
+        
+    // OpenGraph event handlers (for social networks and referencement)
+    add_event_handler('loc_end_page_header', 'threed_loc_end_page_header',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/opengraph.inc.php');
+    add_event_handler('loc_begin_index', 'threed_loc_begin_index',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/opengraph.inc.php');
+}
 
 /**
  * Threed initialization
