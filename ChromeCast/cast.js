@@ -1,10 +1,13 @@
 var castBtn, session, currentMedia;
 
 window['__onGCastApiAvailable'] = function (loaded, errorInfo) {
+    castBtn = document.getElementById('cast_btn_launch');
     if (loaded) {
         initializeCastApi();
+    	castBtn.style.visibility= "visible";
+        
     } else {
-        console.log(errorInfo);
+    	castBtn.style.visibility= "hidden";
     }
 }
 
@@ -15,11 +18,11 @@ function initializeCastApi() {
 }
 
 function onError(message) {
-    console.log(message);
+    castBtn.style.visibility= "hidden";
+    alert(message);
 }
 
 function onInitSuccess() {
-    castBtn = document.getElementById('cast_btn_launch');
     if (castBtn) {
         castBtn.addEventListener('click', toggleCast, false);
     }
@@ -50,14 +53,13 @@ function onRequestSessionSuccess(e) {
 
 function receiverListener(e) {
 	if( e === chrome.cast.ReceiverAvailability.AVAILABLE) {
-	    console.log('receiverListener');
+	    // console.log('receiverListener');
 	}
 }
 
 function onStopCast() {
     castBtn.classList.remove('cast-btn-on');
     session = undefined;
-    console.log('Cast Stopped');
 }
 
 function stopCast() {
@@ -71,7 +73,6 @@ function castMedia() {
     imgURL = window.location.protocol + '//' + window.location.host + '/action.php?id=' + window.location.search.substring(2, window.location.search.indexOf('/', 2)) + '&part=e&download';
     mediaInfo = new chrome.cast.media.MediaInfo(imgURL, 'image/x-jps');
     request = new chrome.cast.media.LoadRequest(mediaInfo);
-    console.log('Casting', imgURL);
     session.loadMedia(request, onMediaDiscovered.bind(this, 'loadMedia'), onMediaError);
 }
 
@@ -88,12 +89,12 @@ function onMediaStatusUpdate(e) {
 }
 
 function onMediaError() {
-    console.log('onMediaError');
+    alert('ChromeCast MediaError');
     stopCast();
 }
 
 function onLaunchError() {
-    console.log('Cant open session');
+    alert('Cant open ChromeCast session');
 }
 
 

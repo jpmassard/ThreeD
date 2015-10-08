@@ -20,5 +20,6 @@ $lang['You cannot transfer more than '] = 'Vous ne pouvez pas transférer plus d
 $lang['files due to php.ini parameters.'] = 'fichiers à cause des limitations de php.ini';
 
 $lang['Common ThreeD configuration'] = 'Configuration de base de ThreeD';
-$lang['Cast this picture'] = 'Diffuser cette image';
+$lang['Cast'] = 'Diffuser';
+$lang['Cast this 3D picture to ChromeCast'] = 'Diffuser cette image 3D vers ChromeCast';
 ?>
