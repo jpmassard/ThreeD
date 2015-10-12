@@ -38,6 +38,7 @@ canvas{
         if(typeof(Storage) !== "undefined") {
           if (sessionStorage.scroll) {
             $(document).scrollTop(sessionStorage.scroll);
+          }
         }
     };
 	$(window).on('resize', resize);
