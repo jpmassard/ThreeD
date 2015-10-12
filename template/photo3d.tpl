@@ -35,11 +35,24 @@ canvas{
         viewer.width('100%');
 		var high = viewer.width() / aspectRatio;
 		viewer.height(high);
+        if(typeof(Storage) !== "undefined") {
+          if (sessionStorage.scroll) {
+            $(document).scrollTop(sessionStorage.scroll);
+        }
     };
 	$(window).on('resize', resize);
+    $(window).on('scroll', scrollPos);
 	viewer.on('vwsResize', resize);
 	viewer.loadImage('{$SRC_IMG}', {if $EXTENSION == 'MPO'}'SQ'{else}'P'{/if});
 
+    function scrollPos() {
+      if(typeof(Storage) !== "undefined") {
+        var stopListener = $(window).mouseup(function(){
+        sessionStorage.scroll = $(document).scrollTop();
+        stopListener();
+        });
+      }
+    }
 {rdelim};
 </script>
 {/html_head}
