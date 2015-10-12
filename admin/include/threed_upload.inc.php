@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2014 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -22,6 +22,8 @@
 
 // Needed for restoring original Exif data
 require_once(THREED_PATH . 'Pel/PelJpeg.php');
+
+define ('THUMBNAIL_DIM', 400);
 
 function threed_image_upload_file($file) {
 	global $threed_image_exts;
@@ -138,7 +140,7 @@ function threed_image_create_thumbnail($folder, $name) {
     $extension= strtoupper(get_extension ($name));
     $width = $file_infos['width'];
     $height = $file_infos['height'];
-    $temp = imagecreatetruecolor (640, 400);
+    $ratio = $width / $height;
     if ($extension == 'MPO') {
        $handle = fopen($folder.'/'.$name,'rb');
 	   $status = 0;
@@ -167,14 +169,27 @@ function threed_image_create_thumbnail($folder, $name) {
 			}
 		}
         fseek ($handle, $Start);
-        $temp2 = imagecreatefromstring (fread ($handle, $End- $Start));
-        imagecopyresampled($temp, $temp2, 0, 0, 0, 0, 640, 400, $width, $height);
+        $image = imagecreatefromstring (fread ($handle, $End- $Start));
+        if ($ratio > 1) {
+          $temp = imagecreatetruecolor (THUMBNAIL_DIM * $ratio, THUMBNAIL_DIM);
+          imagecopyresampled($temp, $image, 0, 0, 0, 0, THUMBNAIL_DIM * $ratio, THUMBNAIL_DIM, $width, $height);
+        }
+        else {
+          $temp = imagecreatetruecolor (THUMBNAIL_DIM , THUMBNAIL_DIM / $ratio);
+          imagecopyresampled($temp, $image, 0, 0, 0, 0, THUMBNAIL_DIM, THUMBNAIL_DIM / $ratio, $width, $height);
+        }
         fclose ($handle);
 	} else {
 		// Image in JPS or JPG format. Isolate left side only
 	    $image = imagecreatefromjpeg($folder.'/'.$name);
-        $width /= 2;
-        imagecopyresampled($temp, $image, 0, 0, 0, 0, 640, 400, $width, $height);
+        if ($ratio > 1) {
+          $temp = imagecreatetruecolor (THUMBNAIL_DIM * $ratio / 2, THUMBNAIL_DIM);
+          imagecopyresampled($temp, $image, 0, 0, 0, 0, THUMBNAIL_DIM * $ratio / 2, THUMBNAIL_DIM, $width / 2, $height);
+        }
+        else {
+          $temp = imagecreatetruecolor (THUMBNAIL_DIM , THUMBNAIL_DIM / $ratio * 2);
+          imagecopyresampled($temp, $image, 0, 0, 0, 0, THUMBNAIL_DIM, THUMBNAIL_DIM / $ratio * 2, $width / 2, $height);
+        }
 	}
 
 	// read Exif infos from original file
