@@ -50,7 +50,6 @@ canvas{
       if(typeof(Storage) !== "undefined") {
         var stopListener = $(window).mouseup(function(){
         sessionStorage.scroll = $(document).scrollTop();
-        stopListener();
         });
       }
     }
