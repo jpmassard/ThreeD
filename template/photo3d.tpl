@@ -17,7 +17,7 @@ canvas{
 <link rel="stylesheet" type="text/css" href="{$THREED_PATH}vws/VWS.css" />
 <script type="text/javascript" src="{$THREED_PATH}vws/VWS.js"></script>
 <script type="text/javascript">
-	VWS.START = function() {ldelim}
+	VWS.START = function() {
 	VWS.player.realAnaglyphs = {
 		ARCF: 'ARCV',
 		AYBF: 'AYBF',
@@ -33,8 +33,10 @@ canvas{
 	{/if}
 	var resize = function() {
         viewer.width('100%');
-		var high = viewer.width() / aspectRatio;
-		viewer.height(high);
+        if (aspectRatio > 1)
+		   viewer.height(viewer.width() / aspectRatio);
+        else
+           viewer.height($(window).height());
         if(typeof(Storage) !== "undefined") {
           if (sessionStorage.scroll) {
             $(document).scrollTop(sessionStorage.scroll);
@@ -45,15 +47,16 @@ canvas{
     $(window).on('scroll', scrollPos);
 	viewer.on('vwsResize', resize);
 	viewer.loadImage('{$SRC_IMG}', {if $EXTENSION == 'MPO'}'SQ'{else}'P'{/if});
-
+  };
+    
     function scrollPos() {
       if(typeof(Storage) !== "undefined") {
         var stopListener = $(window).mouseup(function(){
         sessionStorage.scroll = $(document).scrollTop();
+        // stopListener();
         });
       }
     }
-{rdelim};
 </script>
 {/html_head}
 <div id="stereo">
