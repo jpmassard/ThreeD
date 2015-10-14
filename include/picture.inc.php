@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2014 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -18,6 +18,7 @@
 // | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
 // | USA.                                                                  |
 // +-----------------------------------------------------------------------+
+
 defined('THREED_PATH') or die('Hacking attempt!');
 
 include_once(PHPWG_ROOT_PATH . 'admin/include/functions_upload.inc.php');
@@ -77,5 +78,3 @@ function threed_prepare_picture($picture)
 function threed_metadata_available($status, $path){
 	return true;
 }
-
-?>

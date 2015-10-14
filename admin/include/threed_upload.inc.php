@@ -230,4 +230,3 @@ function load_metadata($file)
   return $infos;
 }
 
-?>

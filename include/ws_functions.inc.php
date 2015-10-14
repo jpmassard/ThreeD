@@ -1,4 +1,24 @@
 <?php
+// +-----------------------------------------------------------------------+
+// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// +-----------------------------------------------------------------------+
+// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
+// +-----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify  |
+// | it under the terms of the GNU General Public License as published by  |
+// | the Free Software Foundation                                          |
+// |                                                                       |
+// | This program is distributed in the hope that it will be useful, but   |
+// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
+// | General Public License for more details.                              |
+// |                                                                       |
+// | You should have received a copy of the GNU General Public License     |
+// | along with this program; if not, write to the Free Software           |
+// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
+// | USA.                                                                  |
+// +-----------------------------------------------------------------------+
+
 defined('THREED_PATH') or die('Hacking attempt!');
 
 function ThreeD_ws_add_methods($arr)
@@ -9,23 +29,7 @@ function ThreeD_ws_add_methods($arr)
   $service->addMethod(
     'pwg.plugins.ThreeD.version', // method name
     'ws_ThreeD_version', // linked PHP function
-/*    array( // list of parameters
-      'what' => array(
-        'default' => 'INFO_ALL', // default value
-        'info' => 'This parameter has a default value', // parameter description
-        ),
-      'ids' => array(
-        'flags' => WS_PARAM_OPTIONAL|WS_PARAM_FORCE_ARRAY, // flags are WS_PARAM_OPTIONAL, WS_PARAM_ACCEPT_ARRAY, WS_PARAM_FORCE_ARRAY
-        'type' => WS_TYPE_INT|WS_TYPE_POSITIVE|WS_TYPE_NOTNULL, // types are WS_TYPE_BOOL, WS_TYPE_INT, WS_TYPE_FLOAT, WS_TYPE_POSITIVE, WS_TYPE_NOTNULL, WS_TYPE_ID
-        'info' => 'This one must be an array',
-        ),
-      'count' => array(
-        'flags' => WS_PARAM_OPTIONAL,
-        'type' => WS_TYPE_INT|WS_TYPE_POSITIVE,
-        'maxValue' => 100, // maximum value for ints and floats
-        ),
-      ), */
-    null, 
+    null, // list of parameters
     'Returns current ThreeD version', // method description
     null, // file to include after param check and before function exec
     array(

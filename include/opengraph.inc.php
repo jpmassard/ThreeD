@@ -3,7 +3,7 @@
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // | Add OpenGraph tags to category pages and 3D pictures                  |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2014 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -19,6 +19,7 @@
 // | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
 // | USA.                                                                  |
 // +-----------------------------------------------------------------------+
+
 defined('THREED_PATH') or die('Hacking attempt!');
 
 // Prepare header for Open Graph meta tags
@@ -91,5 +92,3 @@ function threed_loc_begin_index()
 	);
     $template->append('head_elements', $template->parse('threed_header_meta', true));
 }
-
-?>

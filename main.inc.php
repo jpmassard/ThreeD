@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2014 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -30,7 +30,7 @@ Author: JP Massard
 Author URI: http://piwigo.org
 */
 
-if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
+defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
 
 
 // Define some constants for our plugin.
@@ -114,4 +114,3 @@ function threed_init()
   $conf['threed'] = safe_unserialize($conf['threed']);
 }
 
-?>
