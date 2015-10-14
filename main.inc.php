@@ -21,11 +21,11 @@
 
 /*
 Plugin Name: ThreeD
-Version: 2.7.0
+Version: 2.7
 Description: 3D photo and video viewer plugin based on flashover3D
 	      Flashover3D is not included in the plugin due to license limitations
           (see www.flashover3d.com)
-Plugin URI: http://piwigo.org/ext/
+Plugin URI: http://piwigo.org/ext/extension_view.php?eid=811
 Author: JP Massard
 Author URI: http://piwigo.org
 */
@@ -36,7 +36,7 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 // Define some constants for our plugin.
 global $prefixeTable;
 
-define('THREED_VERSION', '2.7.0');
+define('THREED_VERSION', '2.7');
 define('THREED_ID',      basename(dirname(__FILE__)));
 define('THREED_PATH',    PHPWG_PLUGINS_PATH . THREED_ID . '/');
 define('THREED_ADMIN',   get_root_url() . 'admin.php?page=plugin-' . THREED_ID);
@@ -71,6 +71,15 @@ else
     add_event_handler('loc_begin_index', 'threed_loc_begin_index',
         EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/opengraph.inc.php');
 }
+
+// file containing WEB API function
+$ws3D_file = THREED_PATH . 'include/ws_functions.inc.php';
+
+// add API function
+add_event_handler('ws_add_methods', 'ThreeD_ws_add_methods',
+    EVENT_HANDLER_PRIORITY_NEUTRAL, $ws3D_file);
+
+
 
 /**
  * Threed initialization
