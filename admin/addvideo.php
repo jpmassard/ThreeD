@@ -63,7 +63,7 @@ $upload_max_filesize = min(get_ini_size('upload_max_filesize'), get_ini_size('po
 if ($upload_max_filesize == get_ini_size('upload_max_filesize')) {
 	$upload_max_filesize = get_ini_size('upload_max_filesize', true);
 } else {
-	$upload_max_filesize = get_ini_size('post_max_filesize', true);
+	$upload_max_filesize = get_ini_size('post_max_size', true);
 }
 $upload_max_filesize_display = round($upload_max_filesize/1024, 0);
 

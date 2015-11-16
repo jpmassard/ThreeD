@@ -38,6 +38,7 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
 				<label>
 					<span class="property">{'3D File to upload'|@translate}</span>
 				</label>
+				<input type="hidden" name="MAX_FILE_SIZE" value="{$upload_max_filesize}" />
 				<input name="file" type="file" value=""{if isset($file_uploader_errors.file)} class="file_uploader_error"{/if}>
 				{foreach from=$file_uploader_errors.file item=error_description}<span class="file_uploader_error_description" title="{$error_description}">!</span>{/foreach}
 			</p>
