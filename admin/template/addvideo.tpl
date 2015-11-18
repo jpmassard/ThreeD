@@ -22,7 +22,7 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
   <h2>{'3D video Uploader'|@translate}</h2>
 </div>
 <div class="file_uploader_form">
-	<form method="post" enctype="multipart/form-data">
+	<form method="POST" enctype="multipart/form-data">
 	    <fieldset class="selectAlbum">
 	      <legend>{'Drop into album'|@translate}</legend>
 	
@@ -39,8 +39,8 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
 					<span class="property">{'3D File to upload'|@translate}</span>
 				</label>
 				<input type="hidden" name="MAX_FILE_SIZE" value="{$upload_max_filesize}" />
-				<input name="file" type="file" value=""{if isset($file_uploader_errors.file)} class="file_uploader_error"{/if}>
-				{foreach from=$file_uploader_errors.file item=error_description}<span class="file_uploader_error_description" title="{$error_description}">!</span>{/foreach}
+                <input name="file" type="file" value=""{if isset($threed_uploader_errors.file)} class="file_uploader_error"{/if}>
+				{foreach from=$threed_uploader_errors.file item=error_description}<span style="color:red" class="file_uploader_error_description">{$error_description}</span>{/foreach}
 			</p>
 			<p class="file_uploader_center">
 				{'3D file max filesize'|@translate} {$upload_max_filesize_display} Ko.
@@ -52,8 +52,8 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
 				<label>
 					<span class="property">{'Thumbnail to upload'|@translate}</span>
 				</label>
-				<input name="file_uploader_thumbnail" type="file" value=""{if isset($file_uploader_errors.thumbnail)} class="file_uploader_error"{/if}>
-				{foreach from=$file_uploader_errors.thumbnail item=error_description}<span class="file_uploader_error_description" title="{$error_description}">!</span>{/foreach}
+				<input name="thumbnail" type="file" value=""{if isset($threed_uploader_errors.thumbnail)} class="file_uploader_error"{/if}>
+				{foreach from=$threed_uploader_errors.thumbnail item=error_description}<span class="file_uploader_error_description">{$error_description}</span>{/foreach}
 			</p>
 			<p class="file_uploader_center">
 				{'Let the plugin do the job or use a personnal image'|@translate}.
@@ -65,8 +65,8 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
 				<label for="file_uploader_title_input">
 					<span class="property">{'Title'|@translate}</span>
 				</label>
-				<input size="50" id="file_uploader_title_input" type="text" name="file_uploader[title]" value="{$file_uploader.title}"{if isset($file_uploader_errors.title)} class="file_uploader_error"{/if}>
-				{if isset($file_uploader_errors.title)}<span class="file_uploader_error_description" title="{$file_uploader_errors.title}">!</span>{/if}
+				<input size="50" id="file_uploader_title_input" type="text" name="file_uploader[title]" value="{$file_uploader.title}"{if isset($threed_uploader_errors.title)} class="file_uploader_error"{/if}>
+				{if isset($threed_uploader_errors.title)}<span class="file_uploader_error_description" title="{$threed_uploader_errors.title}">!</span>{/if}
 			</p>
 			<p class="file_uploader_center">
 				<label for="file_uploader_title_input">
@@ -79,8 +79,8 @@ jQuery('[data-add-album]').pwgAddAlbum({ cache: categoriesCache });
 				<label for="file_uploader_description_input">
 					<span class="property">{'Description'|@translate}</span>
 				</label><br />
-				<textarea cols="50" rows="5" id="file_uploader_description_input" type="text" name="file_uploader[description]"{if isset($file_uploader_errors.description)} class="file_uploader_error"{/if}>{$file_uploader.description}</textarea>
-				{if isset($file_uploader_errors.description)}<span class="file_uploader_error_description" title="{$file_uploader_errors.description}">!</span>{/if}
+				<textarea cols="50" rows="5" id="file_uploader_description_input" type="text" name="file_uploader[description]"{if isset($threed_uploader_errors.description)} class="file_uploader_error"{/if}>{$file_uploader.description}</textarea>
+				{if isset($threed_uploader_errors.description)}<span class="file_uploader_error_description" title="{$threed_uploader_errors.description}">!</span>{/if}
 			</p>
 			</fieldset>
 		<p>

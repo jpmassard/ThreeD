@@ -31,7 +31,7 @@ include_once(PHPWG_ROOT_PATH . 'admin/include/functions_upload.inc.php');
 if (isset($_POST['submit'])) {
 	$threed_uploader_errors = array();
 	$threed_uploader_file = array();
-print_r ($_POST);
+
 	if($_FILES['file']['error'] == UPLOAD_ERR_OK) {
 		$threed_uploader_file = threed_video_upload_file($_FILES['file']);
 		if(count($threed_uploader_file['errors']) != 0)
@@ -43,9 +43,16 @@ print_r ($_POST);
 	}
 
 	if (count($threed_uploader_errors) == 0) {
-    	$threed_uploader_create_thumbnail = threed_video_upload_thumbnail($threed_uploader_file['folder'], $threed_uploader_file['name']);
+        if ($_FILES['thumbnail']['error'] == UPLOAD_ERR_OK) {
+    	    $threed_uploader_create_thumbnail = threed_video_upload_thumbnail($threed_uploader_file, $_FILES['thumbnail']);
     		if(count($threed_uploader_create_thumbnail['errors']) != 0)
     			$threed_uploader_errors['thumbnail'] = $threed_uploader_create_thumbnail['errors'];
+        }
+        else if($_FILES['thumbnail']['error'] == UPLOAD_ERR_INI_SIZE) {
+		    $threed_uploader_errors['thumbnail']['file_too_large'] = l10n('File exceeds the upload_max_filesize directive in php.ini');
+	    } else {
+		    $threed_uploader_errors['thumbnail']['no_file'] = l10n('Specify a thumbnail to upload');
+	    } 
     }
 	
 	if (count($threed_uploader_errors) == 0) {
@@ -130,9 +137,8 @@ function threed_video_upload_file($file) {
 	return $return;
 }
 
-
-function threed_video_upload_thumbnail($folder, $name) {
-	$upload_dir = $folder.'/pwg_representative';
+function threed_video_upload_thumbnail($video, $thumbnail) {
+	$upload_dir = $video['folder'].'/pwg_representative';
 	$threed_uploader_errors = array();
 	$return = array();
 	
@@ -142,7 +148,7 @@ function threed_video_upload_thumbnail($folder, $name) {
 	   umask(0000);
 	   if (!@mkdir($upload_dir, 0777, true))
 	   {
-		  $threed_uploader_errors['upload_error'] = l10n('Can\'t create thumnail directory');
+		  $threed_uploader_errors['upload_error'] = l10n('Can\'t create thumbnail directory');
 		  $return['errors'] = $threed_uploader_errors;
 		  return $return;
 	   }
@@ -150,8 +156,17 @@ function threed_video_upload_thumbnail($folder, $name) {
 	// Add index.htm to prevent browsing the image directory
     secure_directory($upload_dir);
     
-    $extension= strtoupper(get_extension ($name));
-
+    $extension= get_extension ($thumbnail['name']);
+    if ($extension == 'jpeg' || $extension == 'JPEG')
+        $extension = 'jpg';
+    $file_dest = $upload_dir.'/'.get_filename_wo_extension ($video['name']).'.'.$extension;
+    $extension= strtoupper($extension);
+    
+	// Move temporary file to destination directory
+	if (!move_uploaded_file($thumbnail['tmp_name'], $file_dest)) {
+		$threed_uploader_errors['upload_error'] = l10n('Can\'t upload file to galleries directory');
+	}
+    
 	$return['errors'] = $threed_uploader_errors;
 	return $return;
 }
