@@ -166,7 +166,7 @@ function threed_video_upload_thumbnail($video, $thumbnail) {
 	if (!move_uploaded_file($thumbnail['tmp_name'], $file_dest)) {
 		$threed_uploader_errors['upload_error'] = l10n('Can\'t upload file to galleries directory');
 	}
-    
+    threed_thumnail_video_watermark ($file_dest);    
 	$return['errors'] = $threed_uploader_errors;
 	return $return;
 }
@@ -197,4 +197,19 @@ function threed_video_synchronize($file_uploader_file, $properties) {
     associate_images_to_categories(array($image_id), array($properties['category']));
 }
 
+function threed_thumnail_video_watermark ($image)
+{
+    $stamp = imagecreatefrompng(THREED_PATH . 'admin/video.png');
+    $im = imagecreatefromjpeg($image);
+    
+    $sx = imagesx($stamp);
+    $sy = imagesy($stamp);
+    
+    // Copy the stamp image onto our photo using the margin offsets and the photo 
+    // width to calculate positioning of the stamp. 
+    imagecopy($im, $stamp, (imagesx($im) - $sx)/2 , (imagesy($im) - $sy)/2, 0, 0, $sx, $sy);
+    imagejpeg ($im, $image, 70);
+    // Output and free memory
+    imagedestroy($im);
+ }
 ?>
