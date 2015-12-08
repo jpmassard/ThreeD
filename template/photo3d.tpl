@@ -24,10 +24,10 @@ canvas{
 		AGMF: 'AGMF'
 	};
 
-	var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'MPO'}'MPO'{else}'IMG'{/if}, 'stereo');
+	var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');
 
 	var aspectRatio= {$FILE_INFO['width']}/{$FILE_INFO['height']};
-	{if $EXTENSION != 'MPO'} 
+	{if $EXTENSION != 'mpo'} 
 	// divide by 2 for non MPO file
 	aspectRatio /= 2;
 	{/if}
@@ -46,7 +46,7 @@ canvas{
 	$(window).on('resize', resize);
     $(window).on('scroll', scrollPos);
 	viewer.on('vwsResize', resize);
-	viewer.loadImage('{$SRC_IMG}', {if $EXTENSION == 'MPO'}'SQ'{else}'P'{/if});
+	viewer.loadImage('{$SRC_IMG}', {if $EXTENSION == 'mpo'}'SQ'{else}'P'{/if});
   };
     
     function scrollPos() {

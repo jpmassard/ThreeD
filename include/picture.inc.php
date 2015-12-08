@@ -50,7 +50,7 @@ function threed_render_image($content, $image)
     'threed_photo_content' => THREED_PATH . 'template/photo3d.tpl',
     'threed_video_content' => THREED_PATH . 'template/video3d.tpl',
     ));
-    $extension = strtoupper(get_extension($element));
+    $extension = strtolower(get_extension($element));
     $is_image = in_array($extension, $threed_image_exts);
     
 	$template->assign( 
