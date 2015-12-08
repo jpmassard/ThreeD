@@ -27,7 +27,7 @@ Description: 3D photo and video viewer plugin based on flashover3D
           (see www.flashover3d.com)
 Plugin URI: http://piwigo.org/ext/extension_view.php?eid=811
 Author: JP Massard
-Author URI: http://piwigo.org
+Author URI: http://jpmassard.fr
 */
 
 defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
@@ -52,6 +52,9 @@ if (defined('IN_ADMIN'))
     add_event_handler('get_admin_plugin_menu_links', 'threed_admin_plugin_menu_links',
         EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/admin.inc.php');
 
+    // Add an photo edit tab in photo edit
+    add_event_handler('tabsheet_before_select','threed_add_tab_menu',
+        EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/admin.inc.php');
 }
 else
 {
@@ -75,11 +78,15 @@ else
 // file containing WEB API function
 $ws3D_file = THREED_PATH . 'include/ws_functions.inc.php';
 
-// add API function
+// add web service API handler
 add_event_handler('ws_add_methods', 'ThreeD_ws_add_methods',
     EVENT_HANDLER_PRIORITY_NEUTRAL, $ws3D_file);
-
-
+// add mpo and jps handler
+add_event_handler ('on_upload_done', 'do_threed_picture',
+    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_picture.inc.php');
+// Add mp4 and webm stereo handler
+add_event_handler ('on_upload_done', 'do_threed_video',
+    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_video.inc.php');
 
 /**
  * Threed initialization
@@ -93,24 +100,21 @@ function threed_init()
   // Add 3D extension support for images
   global $threed_image_exts;
   $threed_image_exts= array(
-    'jps', 'JPS',
-    'mpo', 'MPO',
+    'jps', 'mpo',
   );
   // Add 3D extension support for videos and 3D videos
   global $threed_video_exts;
   $threed_video_exts= array(
-    'mts', 'MTS',
-    'mp4', 'MP4',
-    'ogg', 'OGG',
-    'webm', 'WEBM',
+    'mp4', 'webm', 
   );
+  $conf['upload_form_all_types']= true;
   $conf['file_ext'] = array_merge ($conf['file_ext'], $threed_image_exts);
   $conf['file_ext'] = array_merge ($conf['file_ext'], $threed_video_exts);
-  
   // load plugin language file
   load_language('plugin.lang', THREED_PATH);
 
   // prepare treed configuration
   $conf['threed'] = safe_unserialize($conf['threed']);
+  
 }
 

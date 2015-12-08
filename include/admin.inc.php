@@ -30,3 +30,18 @@ function threed_admin_plugin_menu_links($menu)
     );
   return $menu;
 }
+
+function threed_add_tab_menu($sheets, $id)
+{
+	if ($id == 'photo')
+	{
+		$sheets['threed'] = array(
+			'caption' => 'ThreeD',
+			'url' => get_root_url().'admin.php?page=plugin&amp;section=ThreeD/admin/admin_video.php&amp;image_id='.$_GET['image_id'],);
+
+		unset($sheets['coi'], $sheets['update']);
+		unset($sheets['rotate'], $sheets['update']);
+	}
+
+	return $sheets;
+}

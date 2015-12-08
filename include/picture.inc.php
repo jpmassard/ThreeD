@@ -21,7 +21,20 @@
 
 defined('THREED_PATH') or die('Hacking attempt!');
 
-include_once(PHPWG_ROOT_PATH . 'admin/include/functions_upload.inc.php');
+// for pwg_image_infos()
+// include_once(PHPWG_ROOT_PATH . 'admin/include/functions_upload.inc.php');
+
+function pwg_image_infos($path)
+{
+  list($width, $height) = getimagesize($path);
+  $filesize = floor(filesize($path)/1024);
+
+  return array(
+    'width'  => $width,
+    'height' => $height,
+    'filesize' => $filesize,
+    );
+}
 
 function threed_render_image($content, $image)
 {

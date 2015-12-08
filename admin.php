@@ -24,14 +24,11 @@ defined('THREED_PATH') or die('Hacking attempt!');
 global $template, $page, $conf;
 
 //load_language('plugin.lang', THREED_PATH);
-$page['tab'] = (isset($_GET['tab'])) ? $_GET['tab'] : 'addphoto';
+$page['tab'] = (isset($_GET['tab'])) ? $_GET['tab'] : 'config';
 
 // tabsheet
 include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
 $tabsheet = new tabsheet();
-$tabsheet->add('addphoto', l10n('Add a 3D photo'), THREED_ADMIN . '-addphoto');
-$tabsheet->add('addvideo', l10n('Add a 3D video'), THREED_ADMIN . '-addvideo');
-$tabsheet->add('batch', l10n('Batch mode'), THREED_ADMIN . '-batch');
 $tabsheet->add('config', l10n('Configuration'), THREED_ADMIN . '-config');
 $tabsheet->select($page['tab']);
 $tabsheet->assign();
