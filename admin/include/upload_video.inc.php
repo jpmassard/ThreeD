@@ -25,6 +25,7 @@ function do_threed_video ($rep_ext, $ext, $file_path)
   // exit immediately if extension does not correspond
   // so an other driver can do the job
   global $threed_video_exts;
+  global $conf;
   if (!isset($ext) or !in_array($ext, $threed_video_exts))
     return $rep_ext;
 
@@ -35,17 +36,14 @@ function do_threed_video ($rep_ext, $ext, $file_path)
   prepare_directory(dirname($representative_file_path));
   
   $second = 1;
-  $conf['ffmpeg_dir'] = 'd:\\ffmpeg\\';
   $ffmpeg = $conf['ffmpeg_dir'].'ffmpeg';
   $ffmpeg.= ' -i "'.$file_path.'"';
   $ffmpeg.= ' -an -ss '.$second;
   $ffmpeg.= ' -t 1 -r 1 -y -vcodec mjpeg -f mjpeg';
   $ffmpeg.= ' "'.$representative_file_path.'"';
-  ws_logfile($ffmpeg);
   @exec($ffmpeg);
 
   if (file_exists($representative_file_path))
-    
     threed_thumbnail_video_watermark ($representative_file_path);    
   else
     $representative_extension = null;

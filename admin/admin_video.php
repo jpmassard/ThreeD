@@ -27,11 +27,12 @@ include_once ('include/upload_video.inc.php');
 
 global $template;
 
-$query = 'SELECT path, name FROM '.IMAGES_TABLE.' WHERE id = '.$_GET['image_id'].';';
+$query = 'SELECT path, name, representative_ext FROM '.IMAGES_TABLE.' WHERE id = '.$_GET['image_id'].';';
 $result = pwg_query($query);
 $row = pwg_db_fetch_assoc($result);
 $file_path = $row['path'];
 $name= $row['name'];
+$repExt= $row['representative_ext'];
 
 $representative_file_path = dirname($file_path).'/pwg_representative/';
 $representative_file_path.= get_filename_wo_extension(basename($file_path)).'.jpg';
@@ -42,8 +43,18 @@ if (isset($_POST['submit'])) {
     
 	if($_FILES['file']['error'] == UPLOAD_ERR_OK) {
         $error= threed_video_upload_thumbnail($_FILES['file'], $representative_file_path);
-        delete_element_derivatives(array('path' => $file_path,
-                                         'representative_ext' => 'jpg',));    
+        if ($repExt == 'jpg')
+           delete_element_derivatives(array('path' => $file_path,
+                                            'representative_ext' => 'jpg',));
+        else {
+            list($width, $height) = getimagesize($file_path);
+            $update = array(
+                'width' => $width,
+                'height' => $height,
+                'representative_ext' => 'jpg',
+            );
+            single_update(IMAGES_TABLE, $update, array('id' => $_GET['image_id']));
+        }    
 
 		if ($error != null)
 			$uploader_errors['file']['upload'] = $error;
