@@ -29,7 +29,7 @@ class ThreeD_maintain extends PluginMaintain
     'chromeCast' => 0,
     'openGraph'  => 0,
     'video_autoplay' => 0,
-    'video_description' => '',
+    'video_autoloop' => 0,
     );
     
   private $table;

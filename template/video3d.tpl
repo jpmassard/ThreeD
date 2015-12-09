@@ -8,7 +8,7 @@ canvas{
 {/html_style}
 {html_head}
 {if $THREED_CONF.openGraph}
-<meta property="og:type" content="video">
+<meta property="og:type" content="video.other">
 <meta property="og:url" content="{$URL}">
 {/if}
 <script type="text/javascript" 
@@ -24,6 +24,12 @@ canvas{
 		};
 	    var aspect = 16 / 9;
 	    var player = new VWS.player.S3dVideoPlayerApp('stereo');
+        {if $THREED_CONF.video_autoplay}
+        player.autoPlay(true);
+        {/if}
+        {if $THREED_CONF.video_autoloop}
+        player.autoLoop(true);
+        {/if}
 		var resize = function() {
 			player.width('100%');
 			var wide = player.width();
@@ -48,7 +54,6 @@ canvas{
       if(typeof(Storage) !== "undefined") {
         var stopListener = $(window).mouseup(function(){
         sessionStorage.scroll = $(document).scrollTop();
-        // stopListener();
         });
       }
     }

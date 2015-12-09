@@ -29,7 +29,7 @@ if (isset($_POST['save_config']))
     'chromeCast' => (int)$_POST['chrCastAllowed'],
     'openGraph' => (int)$_POST['opnGraphAllowed'],
     'video_autoplay' => (int)$_POST['video_autoplay'],
-    'video_description' => $_POST['video_description'],
+    'video_autoloop' => $_POST['video_autoloop'],
     );
   
   conf_update_param('threed', serialize($conf['threed']));

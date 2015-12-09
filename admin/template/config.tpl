@@ -32,8 +32,9 @@
       <label><input type="radio" name="video_autoplay" value="0" {if not $threed.video_autoplay}checked="checked"{/if}> {'No'|translate}</label>
     </p>
     <p>
-      <span class="property">{'Description'|translate}</span>
-      <input type="text" name="video_description" value="{$threed.video_description}" size="100">
+      <span class="property">{'Autoloop'|translate}</span>
+      <label><input type="radio" name="video_autoloop" value="1" {if $threed.video_autoloop}checked="checked"{/if}> {'Yes'|translate}</label>
+      <label><input type="radio" name="video_autoloop" value="0" {if not $threed.video_autoloop}checked="checked"{/if}> {'No'|translate}</label>
     </p>
 </fieldset>
 
