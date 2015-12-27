@@ -10,6 +10,7 @@ canvas{
 {if $THREED_CONF.openGraph}
 <meta property="og:type" content="video.other">
 <meta property="og:url" content="{$URL}">
+<meta property="og:description" content="{$DESCRIPTION}">
 {/if}
 <script type="text/javascript" 
 	src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.min.js"></script>

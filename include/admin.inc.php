@@ -25,7 +25,7 @@ defined('THREED_PATH') or die('Hacking attempt!');
 function threed_admin_plugin_menu_links($menu)
 {
   $menu[] = array(
-    'NAME' => l10n('ThreeD'),
+    'NAME' => 'ThreeD',
     'URL' => THREED_ADMIN,
     );
   return $menu;

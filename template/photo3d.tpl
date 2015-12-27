@@ -11,6 +11,7 @@ canvas{
 <meta property="og:type" content="article">
 <meta property="og:image" content="{$REPRESENT}">
 <meta property="og:url" content="{$URL}">
+<meta property="og:description" content="{$DESCRIPTION}">
 <meta property="og:author" content="{$AUTHOR}">
 {/if}
 <script type="text/javascript" src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.min.js"></script>
@@ -53,7 +54,6 @@ canvas{
       if(typeof(Storage) !== "undefined") {
         var stopListener = $(window).mouseup(function(){
         sessionStorage.scroll = $(document).scrollTop();
-        // stopListener();
         });
       }
     }

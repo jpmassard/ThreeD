@@ -62,6 +62,7 @@ function threed_render_image($content, $image)
             'EXTENSION'       => $extension,
             'REPRESENT'       => get_absolute_root_url().substr ($image['src_image']->rel_path, 2),
             'URL'		      => get_absolute_root_url().$image['url'],
+            'DESCRIPTION'     => $image['comment'] | '',
             'AUTHOR'          => $image['author'] | '',
 	        'FILE_INFO'       => pwg_image_infos($element),
 	     )

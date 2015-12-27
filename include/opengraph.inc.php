@@ -77,8 +77,8 @@ function threed_loc_begin_index()
         // Main page
         $url= get_absolute_root_url();
         $title= $conf['gallery_title'];
-        $img= ' ';
-        $comment= ' ';
+        $img= '';
+        $comment= l10n('This gallery contains 3D photos and videos');
     }
 
     $template->set_filename('threed_header_meta', THREED_PATH . 'template/header.tpl');
@@ -87,7 +87,7 @@ function threed_loc_begin_index()
             'TITLE'       => $title,
             'URL'		  => $url,
             'IMAGE'       => $img,
-            'DESCRIP'     => $comment
+            'DESCRIPTION'     => $comment
             )
 	);
     $template->append('head_elements', $template->parse('threed_header_meta', true));
