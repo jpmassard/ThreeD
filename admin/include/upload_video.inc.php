@@ -2,7 +2,8 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
+// | Copyright(C) 2008-2016 Piwigo Team                  http://piwigo.org |
+// | Copyright(C) 2014-2016 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -20,14 +21,14 @@
 // +-----------------------------------------------------------------------+
 
 // Create initial video representative picture
-function do_threed_video ($rep_ext, $ext, $file_path)
+function do_threed_video ($representative_ext, $file_path)
 {
   // exit immediately if extension does not correspond
   // so an other driver can do the job
   global $threed_video_exts;
   global $conf;
-  if (!isset($ext) or !in_array($ext, $threed_video_exts))
-    return $rep_ext;
+  if (isset($representative_ext) or !in_array(get_extension($file_path), $threed_video_exts))
+    return $representative_ext;
 
   $representative_file_path = dirname($file_path).'/pwg_representative/';
   $representative_extension= 'jpg';

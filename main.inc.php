@@ -2,7 +2,8 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
+// | Copyright(C) 2008-2016 Piwigo Team                  http://piwigo.org |
+// | Copyright(C) 2014-2016 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -21,7 +22,7 @@
 
 /*
 Plugin Name: ThreeD
-Version: 2.7
+Version: 2.8.0
 Description: 3D photo and video viewer plugin based on flashover3D
 	      Flashover3D is not included in the plugin due to license limitations
           (see www.flashover3d.com)
@@ -36,7 +37,7 @@ defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
 // Define some constants for our plugin.
 global $prefixeTable;
 
-define('THREED_VERSION', '2.7');
+define('THREED_VERSION', '2.8.0');
 define('THREED_ID',      basename(dirname(__FILE__)));
 define('THREED_PATH',    PHPWG_PLUGINS_PATH . THREED_ID . '/');
 define('THREED_ADMIN',   get_root_url() . 'admin.php?page=plugin-' . THREED_ID);
@@ -82,10 +83,10 @@ $ws3D_file = THREED_PATH . 'include/ws_functions.inc.php';
 add_event_handler('ws_add_methods', 'ThreeD_ws_add_methods',
     EVENT_HANDLER_PRIORITY_NEUTRAL, $ws3D_file);
 // add mpo and jps handler
-add_event_handler ('on_upload_done', 'do_threed_picture',
+add_event_handler ('upload_file', 'do_threed_picture',
     EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_picture.inc.php');
 // Add mp4 and webm stereo handler
-add_event_handler ('on_upload_done', 'do_threed_video',
+add_event_handler ('upload_file', 'do_threed_video',
     EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_video.inc.php');
 
 /**

@@ -2,7 +2,8 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2015 Jean-Paul MASSARD                              |
+// | Copyright(C) 2008-2016 Piwigo Team                  http://piwigo.org |
+// | Copyright(C) 2014-2016 Jean-Paul MASSARD                              |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -22,17 +23,17 @@
 // Needed for restoring original Exif data
 require_once(THREED_PATH . 'Pel/PelJpeg.php');
 
-define ('THUMBNAIL_DIM', 400);
+define ('THUMBNAIL_DIM', 480);
 
-// Create initial video representative picture
-function do_threed_picture ($rep_ext, $ext, $file_path)
+// Create initial representative picture
+function do_threed_picture ($representative_ext, $file_path)
 {
   // exit immediately if extension does not correspond
   // so an other picture driver can do the job
   global $threed_image_exts;
-  if (!isset($ext) or !in_array($ext, $threed_image_exts))
-    return $rep_ext;
-
+  if (isset($representative_ext) or !in_array(get_extension($file_path), $threed_image_exts))
+    return $representative_ext;
+      
   $representative_file_path = dirname($file_path).'/pwg_representative/';
   $representative_extension= 'jpg';
   $representative_file_path.= get_filename_wo_extension(basename($file_path)).'.jpg';
@@ -46,6 +47,7 @@ function do_threed_picture ($rep_ext, $ext, $file_path)
   $width = $file_infos['width'];
   $height = $file_infos['height'];
   $ratio = $width / $height;
+  $ext = get_extension($file_path); 
   if ('mpo' == $ext) {
      $handle = fopen($file_path,'rb');
      $status = 0;
