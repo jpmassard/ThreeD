@@ -88,7 +88,7 @@ function threed_loc_begin_index()
             'TITLE'       => $title,
             'URL'		  => $url,
             'IMAGE'       => $img,
-            'DESCRIPTION'     => $comment
+            'DESCRIPTION'     => strip_tags($comment)
             )
 	);
     $template->append('head_elements', $template->parse('threed_header_meta', true));
