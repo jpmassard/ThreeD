@@ -25,10 +25,14 @@ canvas{
 		AGMF: 'AGMF'
 	};
 
-	var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');
-
+	{if $EXTENSION == 'jpg'}
+  var viewer = new VWS.player.ImageViewerApp('stereo');
+  {else}
+  var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');
+  {/if}
+  
 	var aspectRatio= {$FILE_INFO['width']}/{$FILE_INFO['height']};
-	{if $EXTENSION != 'mpo'} 
+	{if $EXTENSION == 'jps'} 
 	// divide by 2 for non MPO file
 	aspectRatio /= 2;
 	{/if}

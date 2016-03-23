@@ -52,7 +52,7 @@ function threed_render_image($content, $image)
     'threed_video_content' => THREED_PATH . 'template/video3d.tpl',
     ));
     $extension = strtolower(get_extension($element));
-    $is_image = in_array($extension, $threed_image_exts);
+    $is_image = in_array($extension, $threed_image_exts) || $extension == 'jpg';
     
 	$template->assign( 
 		array(
@@ -79,7 +79,7 @@ function threed_prepare_picture($picture)
 	global $threed_image_exts, $threed_video_exts;
     
     $extension = strtolower(get_extension($picture['current']['file']));
-	if (in_array($extension, $threed_image_exts) || in_array($extension, $threed_video_exts))
+	if (in_array($extension, $threed_image_exts) || in_array($extension, $threed_video_exts) || $extension == 'jpg')
     {
         // remove default parser
         remove_event_handler('render_element_content', 'default_picture_content', EVENT_HANDLER_PRIORITY_NEUTRAL);
