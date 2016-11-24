@@ -100,6 +100,7 @@ function do_threed_picture ($representative_ext, $file_path)
       }
    }
 	imagejpeg ($temp, $representative_file_path, 70);
+  imagedestroy ($temp);
 
 	// read Exif infos from original file
 	$input_jpeg = new PelJpeg($file_path);
@@ -117,4 +118,20 @@ function do_threed_picture ($representative_ext, $file_path)
   return $representative_extension;
 }
 
+function threed_thumbnail_2Dphoto_watermark ($image)
+{
+    $stamp = imagecreatefrompng(THREED_PATH . 'admin/2D.png');
+    $im = imagecreatefromjpeg($image);
+    
+    $sx = imagesx($stamp);
+    $sy = imagesy($stamp);
+    
+    // Copy the stamp image onto our photo using the margin offsets and the photo 
+    // width to calculate positioning of the stamp. 
+    imagecopy($im, $stamp, (imagesx($im) - $sx)/2 , (imagesy($im) - $sy)/2, 0, 0, $sx, $sy);
+    imagejpeg ($im, $image, 70);
+    // free memory
+    imagedestroy($im);
+    imagedestroy($stamp);
+ }
 ?>
