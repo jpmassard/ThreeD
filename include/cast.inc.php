@@ -2,8 +2,8 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2008-2016 Piwigo Team                  http://piwigo.org |
-// | Copyright(C) 2014-2016 Jean-Paul MASSARD          http://jpmassard.fr |
+// | Copyright(C) 2008-2017 Piwigo Team                  http://piwigo.org |
+// | Copyright(C) 2014-2017 Jean-Paul MASSARD          http://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -26,23 +26,25 @@ defined('THREED_PATH') or die('Hacking attempt!');
 function add_cast_api()
 {
   global $conf, $template;
-  if ($conf['threed']['chromeCast'] == 1 and script_basename()=='picture')
+  if ($conf['threed']['chromeCast'] == 1 and script_basename()=='index')
   {
+    $jQuery= '<script type="text/javascript" src= "' . PHPWG_ROOT_PATH.'themes/default/js/jquery.min.js"' . '></script>';
+	  $template->append('footer_elements', $jQuery);
 	  $template->append('footer_elements', '
-	    <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
-	    <script type="text/javascript" src="plugins/ThreeD/ChromeCast/cast.js"></script>
-	  ');
+      <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+	    <script type="text/javascript" src="plugins/ThreeD/ChromeCast/cast.js"></script>');
   }
 }
 
 function add_cast_btn()
 {
     global $conf, $template;
-    if ($conf['threed']['chromeCast'] == 1 and script_basename()=='picture')
+    if ($conf['threed']['chromeCast'] == 1 and script_basename()=='index')
     {
 	    $template->set_filename('cast_button', realpath(THREED_PATH.'template/castbutton.tpl'));
+      $template->assign(array( 'THREED_PATH' => THREED_PATH,));
 	    $button = $template->parse('cast_button', true);
-	    $template->add_picture_button($button, BUTTONS_RANK_NEUTRAL);
+	    $template->add_index_button($button, BUTTONS_RANK_NEUTRAL);
 	}
 }
 

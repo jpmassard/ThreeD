@@ -1,100 +1,72 @@
-var castBtn, session, currentMedia;
+var castSession;
 
-window['__onGCastApiAvailable'] = function (loaded, errorInfo) {
-    castBtn = document.getElementById('cast_btn_launch');
-    if (loaded) {
-        initializeCastApi();
-    	castBtn.style.visibility= "visible";
-        
-    } else {
-    	castBtn.style.visibility= "hidden";
+window['__onGCastApiAvailable'] = function (loaded) {
+    if(typeof(Storage) === "undefined") {
+      alert ("Cannot access Session Storage");
+      return;
     }
-}
+    castSession = null;
+    if (!loaded) 
+        return;
+    initializeCastApi();
+    cast.framework.CastContext.getInstance().addEventListener(
+      cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+      onSessionStateChanged);
+};
 
 function initializeCastApi() {
-    var sessionRequest = new chrome.cast.SessionRequest("C8156DF1");
-    var apiConfig = new chrome.cast.ApiConfig(sessionRequest, sessionListener, receiverListener);
-    chrome.cast.initialize(apiConfig, onInitSuccess, onError);
+    cast.framework.CastContext.getInstance().setOptions({
+    receiverApplicationId: "C8156DF1",
+    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+    });
 }
 
-function onError(message) {
-    castBtn.style.visibility= "hidden";
-    alert(message);
+function onSessionStateChanged (event)
+{   
+  switch (event.sessionState) {
+    case cast.framework.SessionState.SESSION_STARTED:
+      castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+      console.log('CastContext: CastSession connected');
+      break;
+    case cast.framework.SessionState.SESSION_RESUMED:
+      break;
+    case cast.framework.SessionState.SESSION_ENDED:
+      // sessionStorage.removeItem ("castSession");
+      castSession = null;
+      console.log('CastContext: CastSession disconnected');
+   break;
+  }
 }
 
-function onInitSuccess() {
-    if (castBtn) {
-        castBtn.addEventListener('click', toggleCast, false);
-    }
+$( "#thumbnails" ).click(function ( event ) {
+  // var castSession= $.parseJSON(sessionStorage.getItem ("castSession"));
+  console.log (castSession);
+  if (castSession !== null)
+  {
+    var temp =  $(event.target);
+    do  
+    {
+      temp =  temp.parent();
+      var currentMediaURL = temp.attr ('href');
+    } while (currentMediaURL == undefined);
+    var params = currentMediaURL.substring (currentMediaURL.indexOf('?/') + 2);
+    var imgID = params.split('/')[0];
+    var imgURL = window.location.protocol + '//' + window.location.host + '/action.php?id=' + imgID + '&part=e&download';
+
+    console.log ("Casting " + imgURL );
+    var mediaInfo = new chrome.cast.media.MediaInfo(imgURL, 'image/x-jps');
+    var request = new chrome.cast.media.LoadRequest(mediaInfo);
+    castSession.loadMedia(request).then( onMediaLoaded, mediaError);
+    event.preventDefault();
+  }
+});
+
+function onMediaLoaded()
+{
+  console.log('Load succeed');
 }
 
-function toggleCast() {
-    if (session) {
-        stopCast();
-    } else {
-        chrome.cast.requestSession(onRequestSessionSuccess, onLaunchError);
-    }
+function mediaError(errorCode)
+{
+  console.log('Error code: ' + errorCode);
 }
-
-function sessionListener(e) {
-    if (castBtn) {
-        session = e;
-        session.addMediaListener(onMediaDiscovered.bind(this, 'addMediaListener'));
-        if (session.media.length !== 0) {
-            onMediaDiscovered('onRequestSessionSuccess', session.media[0]);
-        }
-    }
-}
-
-function onRequestSessionSuccess(e) {
-    session = e;
-    castMedia();
-}
-
-function receiverListener(e) {
-	if( e === chrome.cast.ReceiverAvailability.AVAILABLE) {
-	    // console.log('receiverListener');
-	}
-}
-
-function onStopCast() {
-    castBtn.classList.remove('cast-btn-on');
-    session = undefined;
-}
-
-function stopCast() {
-    session.stop(onStopCast, onError);
-}
-
-
-// TODO : add other medias support
-function castMedia() {
-    var imgURL, mediaInfo, request;
-    imgURL = window.location.protocol + '//' + window.location.host + '/action.php?id=' + window.location.search.substring(2, window.location.search.indexOf('/', 2)) + '&part=e&download';
-    mediaInfo = new chrome.cast.media.MediaInfo(imgURL, 'image/x-jps');
-    request = new chrome.cast.media.LoadRequest(mediaInfo);
-    session.loadMedia(request, onMediaDiscovered.bind(this, 'loadMedia'), onMediaError);
-}
-
-function onMediaDiscovered(how, media) {
-    currentMedia = media;
-    media.addUpdateListener(onMediaStatusUpdate);
-    castMedia ();
-    castBtn.classList.add('cast-btn-on');
-}
-
-function onMediaStatusUpdate(e) {
-// TODO
-	console.log('status');
-}
-
-function onMediaError() {
-    alert('ChromeCast MediaError');
-    stopCast();
-}
-
-function onLaunchError() {
-    alert('Cant open ChromeCast session');
-}
-
-
