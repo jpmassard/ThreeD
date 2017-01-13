@@ -5,5 +5,5 @@ $lang['JPEG representative file to upload'] = 'image JPEG représentative à té
 
 $lang['Common ThreeD configuration'] = 'Configuration de base de ThreeD';
 $lang['Cast'] = 'Diffuser';
-$lang['Cast this 3D picture to ChromeCast'] = 'Diffuser cette image 3D vers ChromeCast';
+$lang['Cast pictures in this directory to ChromeCast or Android TV'] = 'Diffuser les images de ce répertoire vers ChromeCast ou Android TV';
 ?>

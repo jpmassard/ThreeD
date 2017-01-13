@@ -31,7 +31,6 @@ function onSessionStateChanged (event)
     case cast.framework.SessionState.SESSION_RESUMED:
       break;
     case cast.framework.SessionState.SESSION_ENDED:
-      // sessionStorage.removeItem ("castSession");
       castSession = null;
       console.log('CastContext: CastSession disconnected');
    break;
@@ -39,7 +38,6 @@ function onSessionStateChanged (event)
 }
 
 $( "#thumbnails" ).click(function ( event ) {
-  // var castSession= $.parseJSON(sessionStorage.getItem ("castSession"));
   console.log (castSession);
   if (castSession !== null)
   {
@@ -51,15 +49,42 @@ $( "#thumbnails" ).click(function ( event ) {
     } while (currentMediaURL == undefined);
     var params = currentMediaURL.substring (currentMediaURL.indexOf('?/') + 2);
     var imgID = params.split('/')[0];
-    var imgURL = window.location.protocol + '//' + window.location.host + '/action.php?id=' + imgID + '&part=e&download';
+    
+    $.ajax({
+    type: "GET",
+    url: window.location.protocol + '//' + window.location.host + '/ws.php?format=json&method=pwg.images.getInfo&image_id=' + imgID,
+    dataType: "json",
+    success: processData,
+    error: function(){ alert("failed contacting piwigo web service"); }
+    });
 
-    console.log ("Casting " + imgURL );
-    var mediaInfo = new chrome.cast.media.MediaInfo(imgURL, 'image/x-jps');
-    var request = new chrome.cast.media.LoadRequest(mediaInfo);
-    castSession.loadMedia(request).then( onMediaLoaded, mediaError);
     event.preventDefault();
   }
 });
+
+function processData(data)
+{
+  if (data.stat == "ok")
+  {
+    var imgURL = data.result.element_url;
+    
+    var extension = getFileExtension (imgURL).toUpperCase();
+    var mimeType;
+    if (extension == 'JPS')
+      mimeType = 'image/x-jps';
+    else if (extension == 'MPO')
+      mimeType = 'image/x-mpo';
+    else if ((extension == 'JPG' || extension == 'JPEG') && data.result.representative_ext == null)
+      mimeType = 'image/jpeg';
+    else if (extension == 'MP4')
+      mimeType = 'video/mp4';
+
+    console.log ("Casting " + imgURL );
+    var mediaInfo = new chrome.cast.media.MediaInfo(imgURL, mimeType);
+    var request = new chrome.cast.media.LoadRequest(mediaInfo);
+    castSession.loadMedia(request).then( onMediaLoaded, mediaError);
+  }
+}
 
 function onMediaLoaded()
 {
@@ -69,4 +94,9 @@ function onMediaLoaded()
 function mediaError(errorCode)
 {
   console.log('Error code: ' + errorCode);
+}
+
+function getFileExtension (filename)
+{
+  return filename.split('.').pop();
 }
