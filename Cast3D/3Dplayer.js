@@ -149,6 +149,14 @@ player3D.CastPlayer = function(element) {
   this.imageElement_.addEventListener('error', this.onError_.bind(this), false);
 
   /**
+   * The image3D element.
+   * @private {HTMLCanvasElement}
+   */
+  this.image3DElement_ = /** @type {HTMLCanvasElement} */
+      (this.element_.querySelector('canvas'));
+  this.image3DElement_.addEventListener('error', this.onError_.bind(this), false);
+
+  /**
    * The media element
    * @private {HTMLMediaElement}
    */
@@ -210,7 +218,7 @@ player3D.CastPlayer.prototype.setIdleTimeout_ = function(t) {
 player3D.CastPlayer.prototype.setContentType_ = function(mimeType) {
   if (mimeType.indexOf('image/') == 0) {
     this.type_ = player3D.Type.IMAGE;
-    if (mimeType.indexOf('x-jps') == 6) {
+    if (mimeType.indexOf('x-jps') == 6 || mimeType.indexOf('x-mpo') == 6 ) {
         this.type_ = player3D.Type.IMAGE3D;
     }
   } else if (mimeType.indexOf('video/') == 0) {
@@ -455,13 +463,14 @@ player3D.CastPlayer.prototype.onLoad_ = function(event) {
       var img = new Image();
       img.src = contentId;
       img.onload = function() {
-  	var canvas = document.getElementById ('canvas');
-    	var ctx = canvas.getContext('2d');
-    	ctx.mozImageSmoothingEnabled = false;
-        canvas.width=img.width/2;
-    	canvas.height=img.height;
-    	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+     	  var ctx = self.image3DElement_.getContext('2d');
+    	  ctx.mozImageSmoothingEnabled = false;
+        self.image3DElement_.width=img.width/2;
+    	  self.image3DElement_.height=img.height;
+    	  ctx.drawImage(img, 0, 0, img.width/2, img.height);
       };
+      self.imageElement_.removeAttribute('src');
+      self.mediaElement_.removeAttribute('src');
       self.setState_(player3D.State.PAUSED, false);
       break;
   }
