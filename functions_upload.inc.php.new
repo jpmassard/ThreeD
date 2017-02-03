@@ -161,6 +161,11 @@ function add_uploaded_file($source_filepath, $original_filename=null, $categorie
 
   global $conf, $user;
 
+  if (!is_null($original_filename))
+  {
+    $original_filename = htmlspecialchars($original_filename);
+  }
+
   if (isset($original_md5sum))
   {
     $md5sum = $original_md5sum;
@@ -220,7 +225,24 @@ SELECT
 
     list($width, $height, $type) = getimagesize($source_filepath);
     
-    if (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
+    if (IMAGETYPE_PNG == $type)
+    {
+      $file_path.= 'png';
+    }
+    elseif (IMAGETYPE_GIF == $type)
+    {
+      $file_path.= 'gif';
+    }
+    elseif (IMAGETYPE_TIFF_MM == $type or IMAGETYPE_TIFF_II == $type)
+    {
+      $is_tiff = true;
+      $file_path.= 'tif';
+    }
+    elseif (IMAGETYPE_JPEG == $type)
+    {
+      $file_path.= 'jpg';
+    }
+    elseif (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
     {
       $original_extension = strtolower(get_extension($original_filename));
 
@@ -518,7 +540,7 @@ function upload_file_video($representative_ext, $file_path)
 
   $ffmpeg_video_exts = array( // extensions tested with FFmpeg
     'wmv','mov','mkv','mp4','mpg','flv','asf','xvid','divx','mpeg',
-    'avi','rm',
+    'avi','rm', 'm4v', 'ogg', 'ogv', 'webm', 'webmv',
     );
 
   if (!in_array(strtolower(get_extension($file_path)), $ffmpeg_video_exts))
