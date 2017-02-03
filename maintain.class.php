@@ -22,6 +22,8 @@
 
 defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
 
+define('THREED_DIRECTORY', PHPWG_PLUGINS_PATH . basename(dirname(__FILE__)) . '/');
+
 class ThreeD_maintain extends PluginMaintain
 {
   private $installed = false;
@@ -64,15 +66,19 @@ class ThreeD_maintain extends PluginMaintain
     {
       $this->install($plugin_version, $errors);
     }
+    copy (PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php', THREED_DIRECTORY.'functions_upload.inc.php'.'.old');
+    copy (THREED_DIRECTORY.'functions_upload.inc.php'.'.new', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
   }
 
   function deactivate()
   {
+      copy (THREED_DIRECTORY.'functions_upload.inc.php'.'.old', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
   }
 
   function uninstall()
   {
     conf_delete_param('threed');
+    deactivate();
   }
 }
   
