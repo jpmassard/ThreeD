@@ -2,7 +2,6 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2008-2017 Piwigo Team                  http://piwigo.org |
 // | Copyright(C) 2014-2017 Jean-Paul MASSARD          http://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
