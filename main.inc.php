@@ -21,7 +21,7 @@
 
 /*
 Plugin Name: ThreeD
-Version: 2.8.0
+Version: 2.9.0
 Description: 3D photo and video viewer plugin based on flashover3D
 	      Flashover3D is not included in the plugin due to license limitations
           (see www.flashover3d.com)
@@ -36,7 +36,7 @@ defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
 // Define some constants for our plugin.
 global $prefixeTable;
 
-define('THREED_VERSION', '2.8.0');
+define('THREED_VERSION', '2.9.0');
 define('THREED_ID',      basename(dirname(__FILE__)));
 define('THREED_PATH',    PHPWG_PLUGINS_PATH . THREED_ID . '/');
 define('THREED_ADMIN',   get_root_url() . 'admin.php?page=plugin-' . THREED_ID);

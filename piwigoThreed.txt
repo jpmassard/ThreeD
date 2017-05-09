@@ -1,0 +1,84 @@
+Quelques notes sur la mise à jour des plugins Piwigo
+
+1) ThreeD nécessite de désactiver dans (piwigo/admin/include/functions_upload.inc.php ) la reconnaissance implicite de format d'image.
+
+    list($width, $height, $type) = getimagesize($source_filepath);
+    
+    if (IMAGETYPE_PNG == $type)
+    {
+      $file_path.= 'png';
+    }
+    elseif (IMAGETYPE_GIF == $type)
+    {
+      $file_path.= 'gif';
+    }
+    elseif (IMAGETYPE_TIFF_MM == $type or IMAGETYPE_TIFF_II == $type)
+    {
+      $is_tiff = true;
+      $file_path.= 'tif';
+    }
+    elseif (IMAGETYPE_JPEG == $type)
+    {
+      $file_path.= 'jpg';
+    }
+    elseif (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
+    {
+      $original_extension = strtolower(get_extension($original_filename));
+
+      if (in_array($original_extension, $conf['file_ext']))
+      {
+        $file_path.= $original_extension;
+      }
+      else
+      {
+
+      devient alors
+      
+    list($width, $height, $type) = getimagesize($source_filepath);
+    
+    if (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
+    {
+      $original_extension = strtolower(get_extension($original_filename));
+
+      if (in_array($original_extension, $conf['file_ext']))
+      {
+        $file_path.= $original_extension;
+      }
+      else
+      {
+
+2) Dans Piwigo/themes/BootstrapDefault/theme.css il faut commenter la balise #theImage img
+
+#theImage {
+  position: relative;
+  overflow-x: hidden;
+  text-align: center;
+}
+/*#theImage img {
+  max-width: 100%;
+  height: auto;
+} */
+#sidebar {
+  position: absolute;
+  right: -250px;
+  text-align: left;
+  z-index: 10000;
+}
+
+3) Il y a une légère incompatibilité entre le plugin "osmap" et le thème "bootstrap default".
+L'icone du globe n'est alors pas affchée. Dans le fichier main.inc.php, definir la fonction
+
+function get_osm_action_model()
+{
+  global $template;
+  $themeconf = $template->get_template_vars('themeconf');
+  if ($themeconf['name'] == 'bootstrapdefault')
+    return '<a href="%s" title="%s" rel="nofollow" class="pwg-state-default pwg-button"%s><span class="glyphicon glyphicon-globe">&nbsp;</span><span class="pwg-button-text">%s</span></a>';
+  else
+    return '<a href="%s" title="%s" rel="nofollow" class="pwg-state-default pwg-button"%s><span class="pwg-icon pwg-icon-globe">&nbsp;</span><span class="pwg-button-text">%s</span></a>';
+}
+
+qui remplacera
+define('OSM_ACTION_MODEL', '<a href="%s" title="%s" rel="nofollow" class="pwg-state-default pwg-button"%s><span class="pwg-icon pwg-icon-globe">&nbsp;</span><span class="glyphicon glyphicon-globe">&nbsp;</span><span class="pwg-button-text">%s</span></a>');
+
+4) ...
