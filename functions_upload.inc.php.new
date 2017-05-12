@@ -225,24 +225,7 @@ SELECT
 
     list($width, $height, $type) = getimagesize($source_filepath);
     
-    if (IMAGETYPE_PNG == $type)
-    {
-      $file_path.= 'png';
-    }
-    elseif (IMAGETYPE_GIF == $type)
-    {
-      $file_path.= 'gif';
-    }
-    elseif (IMAGETYPE_TIFF_MM == $type or IMAGETYPE_TIFF_II == $type)
-    {
-      $is_tiff = true;
-      $file_path.= 'tif';
-    }
-    elseif (IMAGETYPE_JPEG == $type)
-    {
-      $file_path.= 'jpg';
-    }
-    elseif (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
+    if (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
     {
       $original_extension = strtolower(get_extension($original_filename));
 

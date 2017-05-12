@@ -65,13 +65,13 @@ class ThreeD_maintain extends PluginMaintain
     {
       $this->install($plugin_version, $errors);
     }
-    copy (PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php', THREED_DIRECTORY.'functions_upload.inc.php'.'.old');
-    copy (THREED_DIRECTORY.'functions_upload.inc.php'.'.new', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
+    copy (PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php', THREED_DIRECTORY.'functions_upload.inc.php.old');
+    copy (THREED_DIRECTORY.'functions_upload.inc.php.new', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
   }
 
   function deactivate()
   {
-      copy (THREED_DIRECTORY.'functions_upload.inc.php'.'.old', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
+      copy (THREED_DIRECTORY.'functions_upload.inc.php.old', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
   }
 
   function uninstall()
