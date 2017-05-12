@@ -77,7 +77,7 @@ class ThreeD_maintain extends PluginMaintain
   function uninstall()
   {
     conf_delete_param('threed');
-    deactivate();
+    $this->deactivate();
   }
 }
   
