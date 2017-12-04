@@ -14,7 +14,7 @@
  * limitations under the License.
 **/
 
-var castSession;
+var castSession = null;
 
 window['__onGCastApiAvailable'] = function (loaded) {
     if(typeof(Storage) === "undefined") {
