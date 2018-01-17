@@ -15,7 +15,7 @@ canvas{
 <script type="text/javascript" 
 	src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$THREED_PATH}vws/VWS.css" />
-<script type="text/javascript" src="{$THREED_PATH}vws/VWS.js"></script>
+<script type="text/javascript" src="{$THREED_PATH}vws/VWS.min.js"></script>
 <script type="text/javascript">
 	VWS.START = function() {
 		VWS.player.realAnaglyphs = {
