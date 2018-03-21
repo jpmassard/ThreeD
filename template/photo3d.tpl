@@ -5,6 +5,9 @@ canvas{
 #theImage {
     margin : 0px auto;
 }
+#theImage img {
+  max-width: unset;
+} 
 {/html_style}
 {html_head}
 {if $THREED_CONF.openGraph}
