@@ -17,10 +17,6 @@
 var castSession = null;
 
 window['__onGCastApiAvailable'] = function (loaded) {
-    if(typeof(Storage) === "undefined") {
-      alert ("Cannot access Session Storage");
-      return;
-    }
     castSession = null;
     if (!loaded) 
         return;
@@ -42,13 +38,18 @@ function onSessionStateChanged (event)
   switch (event.sessionState) {
     case cast.framework.SessionState.SESSION_STARTED:
       castSession = cast.framework.CastContext.getInstance().getCurrentSession();
-      console.log('CastContext: CastSession connected');
+      console.log('session started');
       break;
     case cast.framework.SessionState.SESSION_RESUMED:
+      castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+      console.log('Session resumed');
+      break;
+    case cast.framework.SessionState.SESSION_ENDING:
+      console.log('Session ending');
       break;
     case cast.framework.SessionState.SESSION_ENDED:
       castSession = null;
-      console.log('CastContext: CastSession disconnected');
+      console.log('Session disconnected');
    break;
   }
 }
