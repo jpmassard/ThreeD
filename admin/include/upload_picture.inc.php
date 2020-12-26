@@ -108,7 +108,7 @@ function do_threed_picture ($representative_ext, $file_path)
 	// write exif data to representative picture
 	$output_jpeg = new PelJpeg($representative_file_path);
 	if ($exif != null)
-  		$output_jpeg->setExif($exif);
+		$output_jpeg->setExif($exif);
 	$output_jpeg->saveFile($representative_file_path);
 
   if (!file_exists($representative_file_path))

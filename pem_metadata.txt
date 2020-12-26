@@ -1,0 +1,4 @@
+File automatically created from SVN or Git repository.
+
+URL: https://bitbucket.org/jpmassard/Threed 
+Revision: 7e8fd69ffdee6cee8fba8e1c2cb4f9ef4fdbb561 (Sun Mar 6 06:43:12 2016 +0100)

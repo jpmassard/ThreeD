@@ -22,11 +22,10 @@
 /*
 Plugin Name: ThreeD
 Version: 2.9.1
-Description: 3D photo and video viewer plugin
-  JPS, MPO and mp4 file formats are supported
-Plugin URI: http://piwigo.org/ext/extension_view.php?eid=811
+Description: 3D photo and video viewer plugin. JPS, MPO and mp4 file formats are supported
+Plugin URI: https://piwigo.org/ext/extension_view.php?eid=869
 Author: JP Massard
-Author URI: http://jpmassard.fr
+Author URI: https://jpmassard.fr
 */
 
 defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
