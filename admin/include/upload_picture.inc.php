@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -20,7 +20,10 @@
 // +-----------------------------------------------------------------------+
 
 // Needed for restoring original Exif data
-require_once(THREED_PATH . 'Pel/PelJpeg.php');
+use lsolesen\pel\PelExif;
+use lsolesen\pel\PelJpeg;
+
+require_once THREED_PATH . '/pelAutoload.php';
 
 define ('THUMBNAIL_DIM', 480);
 
@@ -99,7 +102,7 @@ function do_threed_picture ($representative_ext, $file_path)
       }
    }
 	imagejpeg ($temp, $representative_file_path, 70);
-  imagedestroy ($temp);
+	imagedestroy ($temp);
 
 	// read Exif infos from original file
 	$input_jpeg = new PelJpeg($file_path);

@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD          http://jpmassard.fr |
+// | Copyright(C) 2014-2025 Jean-Paul MASSARD          http://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -62,8 +62,8 @@ function threed_render_image($content, $image)
             'EXTENSION'       => $extension,
             'REPRESENT'       => get_absolute_root_url().substr ($image['src_image']->rel_path, 2),
             'URL'		      => get_absolute_root_url().$image['url'],
-            'DESCRIPTION'     => $image['comment'] | '',
-            'AUTHOR'          => $image['author'] | '',
+            'DESCRIPTION'     => $image['comment'] ?: '',
+            'AUTHOR'          => $image['author'] ?: '',
 	        'FILE_INFO'       => pwg_image_infos($element),
 	     )
 	);
