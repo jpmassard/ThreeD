@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2025 Jean-Paul MASSARD          http://jpmassard.fr |
+// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -51,7 +51,7 @@ function threed_render_image($content, $image)
     'threed_video_content' => THREED_PATH . 'template/video3d.tpl',
     ));
     $extension = strtolower(get_extension($element));
-    $is_image = in_array($extension, $threed_image_exts) || $extension == 'jpg';
+    $is_image = in_array($extension, $threed_image_exts);
     
 	$template->assign( 
 		array(
@@ -62,8 +62,9 @@ function threed_render_image($content, $image)
             'EXTENSION'       => $extension,
             'REPRESENT'       => get_absolute_root_url().substr ($image['src_image']->rel_path, 2),
             'URL'		      => get_absolute_root_url().$image['url'],
-            'DESCRIPTION'     => $image['comment'] ?: '',
-            'AUTHOR'          => $image['author'] ?: '',
+            'DESCRIPTION'     => $image['comment'],
+            'AUTHOR'          => $image['author'],
+            'TITLE'           => $image['TITLE'],
 	        'FILE_INFO'       => pwg_image_infos($element),
 	     )
 	);
@@ -78,7 +79,7 @@ function threed_prepare_picture($picture)
 	global $threed_image_exts, $threed_video_exts;
     
     $extension = strtolower(get_extension($picture['current']['file']));
-	if (in_array($extension, $threed_image_exts) || in_array($extension, $threed_video_exts) || $extension == 'jpg')
+	if (in_array($extension, $threed_image_exts) || in_array($extension, $threed_video_exts) )
     {
         // remove default parser
         remove_event_handler('render_element_content', 'default_picture_content', EVENT_HANDLER_PRIORITY_NEUTRAL);
@@ -90,5 +91,5 @@ function threed_prepare_picture($picture)
 }
 
 function threed_metadata_available($status, $path){
-	return true;
+	return true;  //TODO
 }

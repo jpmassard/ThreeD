@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -19,20 +19,20 @@
 // | USA.                                                                  |
 // +-----------------------------------------------------------------------+
 
-defined('THREED_PATH') or die('Hacking attempt!');
+if(!defined('THREED_PATH')) die('Hacking attempt!');
 
 global $conf, $page, $template;
 
 if (isset($_POST['save_config']))
 {
-  $conf['threed'] = array(
+  $config['threed'] = array(
     'chromeCast' => (int)$_POST['chrCastAllowed'],
     'openGraph' => (int)$_POST['opnGraphAllowed'],
     'video_autoplay' => (int)$_POST['video_autoplay'],
-    'video_autoloop' => $_POST['video_autoloop'],
+    'video_autoloop' => (int)$_POST['video_autoloop'],
     );
   
-  conf_update_param('threed', serialize($conf['threed']));
+  conf_update_param('threed', serialize($config['threed']));
   $page['infos'][] = l10n('Information data registered in database');
 }
 

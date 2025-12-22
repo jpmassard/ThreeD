@@ -1,26 +1,27 @@
-/**
- * Copyright 2017 JP Massard. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
+// +-----------------------------------------------------------------------+
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
+// +-----------------------------------------------------------------------+
+// | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
+// +-----------------------------------------------------------------------+
+// | This program is free software; you can redistribute it and/or modify  |
+// | it under the terms of the GNU General Public License as published by  |
+// | the Free Software Foundation                                          |
+// |                                                                       |
+// | This program is distributed in the hope that it will be useful, but   |
+// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
+// | General Public License for more details.                              |
+// |                                                                       |
+// | You should have received a copy of the GNU General Public License     |
+// | along with this program; if not, write to the Free Software           |
+// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
+// | USA.                                                                  |
+// +-----------------------------------------------------------------------+
 
 'use strict';
 
 // Create the namespace
- 
 window.player3D = window.player3D || {};
-cast.receiver.logger.setLevelValue(cast.receiver.LoggerLevel.DEBUG);
 
 /**
  * The amount of time in a given state before the player goes idle.
@@ -62,136 +63,113 @@ player3D.State = {
 };
 
 /**
- * <p>
- * If we are running only in Chrome, then run with only the player - let's us
- * test things. If on a Chromecast then we get everything and remote control
+ * If running in Chrome, then run only the player 
+ * If running on a Chromecast then we get everything and remote control
  * should work.
- * </p>
- * <p>
- * In the Chromecast case, we:
- * </p>
- * <ol>
- * <li>Get and start the CastReceiver</li>
- * <li>Setup the slideshow channel</li>
- * <li>Start the player (this)</li>
- * </ol>
  *
- * @param {Element} element the element to attach the player
+ * In the Chromecast case, we:
+ * - Get and start the CastReceiver
+ * - Setup the slideshow channel
+ * - Start the player (this)
+ *
+ * @param {Element} the element to attach the player
  * @constructor
  * @export
  */
 window.onload = function() {
-  var userAgent = window.navigator.userAgent;
-  var playerDiv = document.getElementById('player');
-// If you want to do some development using the Chrome browser, and then run on
-// a Chromecast you can check the userAgent to see what your running on, then
-// you would only initialize the receiver code when you are actually on a
-// Chromecast device.
-  if (!((userAgent.indexOf('CrKey') > -1) || (userAgent.indexOf('TV') > -1))) {
-      window.player = new player3D.CastPlayer(playerDiv);
-  } else {
-      window.castreceiver = cast.receiver.CastReceiverManager.getInstance();
-      window.player = new player3D.CastPlayer(playerDiv);
-      window.castreceiver.onSenderDisconnected = function(event) {
-          if(window.castreceiver.getSenders().length == 0 &&
-                  event.reason == cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER) {
-              window.close();
-          }
-      }
-      window.castreceiver.start(window.castreceiver);
-  }
+	var userAgent = window.navigator.userAgent;
+	var playerDiv = document.getElementById('player');
+
+	// If you want to do some development using Chrome or Edge browser, and then run on
+	// a Chromecast you can check the userAgent to see what you are running on, then
+	// you would only initialize the receiver code when you are actually on a
+	// Chromecast device.
+	window.player = new player3D.CastPlayer(playerDiv);
+//	if (userAgent.indexOf('CrKey') > -1 || userAgent.indexOf('TV') > -1) {
+		window.castreceiver = cast.receiver.CastReceiverManager.getInstance();
+		window.castreceiver.onSenderDisconnected = function(event) {
+			if(window.castreceiver.getSenders().length == 0 && 	event.reason == cast.receiver.system.DisconnectReason.REQUESTED_BY_SENDER) {
+				window.close();
+			}
+		}
+		window.castreceiver.start(window.castreceiver);
+//	}
 }
 
 /**
- * <p>
  * Cast player constructor - This does the following:
- * </p>
- * <ol>
- * <li>Bind a listener to visibilitychange</li>
- * <li>Set the default state</li>
- * <li>Bind event listeners for img & video tags<br />
- *  error, stalled, waiting, playing, pause, ended, timeupdate, seeking, &
- *  seeked</li>
- * <li>Find and remember the various elements</li>
- * <li>Create the MediaManager and bind to onLoad & onStop</li>
- * </ol>
+ * - Bind a listener to visibilitychange
+ * - Set the default state
+ * - Bind event listeners for img & video tags
+ *      error, stalled, waiting, playing, pause, ended, timeupdate, seeking, & seeked
+ * - Find and remember the various elements
+ * - Create the MediaManager and bind to onLoad & onStop</li>
  *
- * @param {Element} element the element to attach the player
+ * @param {Element} the element to attach the player
  * @constructor
  * @export
  */
 player3D.CastPlayer = function(element) {
 
-  /**
-   * The DOM element the player is attached.
-   * @private {Element}
-   */
-  this.element_ = element;
-// We want to know when the user changes from watching our content to watching
-// another element, such as broadcast TV, or another HDMI port.  This will only
-// fire when CEC supports it in the TV.
-  this.element_.ownerDocument.addEventListener(
-      'webkitvisibilitychange', this.onVisibilityChange_.bind(this), false);
+	/**
+	* The DOM element the player is attached.
+	* @private {Element}
+	*/
+	this.element_ = element;
 
-  /**
-   * The current state of the player
-   * @private {player3D.State}
-   */
-  this.state_;
-  this.setState_(player3D.State.LAUNCHING);
+	// We want to know when the user changes from watching our content to watching
+	// another element, such as broadcast TV, or another HDMI port.  This will only
+	// fire when CEC supports it in the TV.
+	this.element_.ownerDocument.addEventListener('webkitvisibilitychange', this.onVisibilityChange_.bind(this), false);
 
-  /**
-   * The image element.
-   * @private {HTMLImageElement}
-   */
-  this.imageElement_ = /** @type {HTMLImageElement} */
-      (this.element_.querySelector('img'));
-  this.imageElement_.addEventListener('error', this.onError_.bind(this), false);
+	/**
+	* The current state of the player
+	* @private {player3D.State}
+	*/
+	this.state_;
+	this.setState_(player3D.State.LAUNCHING);
 
-  /**
-   * The image3D element.
-   * @private {HTMLCanvasElement}
-   */
-  this.image3DElement_ = /** @type {HTMLCanvasElement} */
-      (this.element_.querySelector('canvas'));
-  this.image3DElement_.addEventListener('error', this.onError_.bind(this), false);
+	/**
+	 * The image element.
+	 * @private {HTMLImageElement}
+	 */
+	this.imageElement_ = this.element_.querySelector('img');	// @type {HTMLImageElement}
+	this.imageElement_.addEventListener('error', this.onError_.bind(this), false);
+	
+	/**
+	 * The image3D element.
+	 * @private {HTMLCanvasElement}
+	 */
+	this.image3DElement_ = this.element_.querySelector('canvas');	// @type {HTMLCanvasElement}    
+	this.image3DElement_.addEventListener('error', this.onError_.bind(this), false);
+	
+	/**
+	 * The media element
+	 * @private {HTMLMediaElement}
+	 */
+	this.mediaElement_ = this.element_.querySelector('video');	//** @type {HTMLMediaElement}
+	this.mediaElement_.addEventListener('error', this.onError_.bind(this), false);
+	this.mediaElement_.addEventListener('stalled', this.onStalled_.bind(this), false);
+	this.mediaElement_.addEventListener('waiting', this.onBuffering_.bind(this), false);
+	this.mediaElement_.addEventListener('playing', this.onPlaying_.bind(this), false);
+	this.mediaElement_.addEventListener('pause', this.onPause_.bind(this), false);
+	this.mediaElement_.addEventListener('ended', this.onEnded_.bind(this), false);
+	this.mediaElement_.addEventListener('timeupdate', this.onProgress_.bind(this), false);
+	this.mediaElement_.addEventListener('seeking', this.onSeekStart_.bind(this), false);
+	this.mediaElement_.addEventListener('seeked', this.onSeekEnd_.bind(this), false);
+	
+	this.progressBarInnerElement_ = this.element_.querySelector('.controls-progress-inner');
+	this.progressBarThumbElement_ = this.element_.querySelector('.controls-progress-thumb');
+	this.curTimeElement_ = this.element_.querySelector('.controls-cur-time');
+	this.totalTimeElement_ = this.element_.querySelector('.controls-total-time');
 
-  /**
-   * The media element
-   * @private {HTMLMediaElement}
-   */
-  this.mediaElement_ = /** @type {HTMLMediaElement} */
-      (this.element_.querySelector('video'));
-  this.mediaElement_.addEventListener('error', this.onError_.bind(this), false);
-  this.mediaElement_.addEventListener('stalled', this.onStalled_.bind(this),
-      false);
-  this.mediaElement_.addEventListener('waiting', this.onBuffering_.bind(this),
-      false);
-  this.mediaElement_.addEventListener('playing', this.onPlaying_.bind(this),
-      false);
-  this.mediaElement_.addEventListener('pause', this.onPause_.bind(this), false);
-  this.mediaElement_.addEventListener('ended', this.onEnded_.bind(this), false);
-  this.mediaElement_.addEventListener('timeupdate', this.onProgress_.bind(this),
-      false);
-  this.mediaElement_.addEventListener('seeking', this.onSeekStart_.bind(this),
-      false);
-  this.mediaElement_.addEventListener('seeked', this.onSeekEnd_.bind(this),
-      false);
-
-  this.progressBarInnerElement_ = this.element_.querySelector(
-      '.controls-progress-inner');
-  this.progressBarThumbElement_ = this.element_.querySelector(
-      '.controls-progress-thumb');
-  this.curTimeElement_ = this.element_.querySelector('.controls-cur-time');
-  this.totalTimeElement_ = this.element_.querySelector('.controls-total-time');
-
-  /**
-   * The remote media object
-   * @private {cast.receiver.MediaManager}
-   */
-  this.mediaManager_ = new cast.receiver.MediaManager(this.mediaElement_);
-  this.mediaManager_.onLoad = this.onLoad_.bind(this);
-  this.mediaManager_.onStop = this.onStop_.bind(this);
+	/**
+	* The remote media object
+	* @private {cast.receiver.MediaManager}
+	*/
+	this.mediaManager_ = new cast.receiver.MediaManager(this.mediaElement_);
+	this.mediaManager_.onLoad = this.onLoad_.bind(this);
+	this.mediaManager_.onStop = this.onStop_.bind(this);
 
 };
 
@@ -202,10 +180,10 @@ player3D.CastPlayer = function(element) {
  * @private
  */
 player3D.CastPlayer.prototype.setIdleTimeout_ = function(t) {
-  clearTimeout(this.idle_);
-  if (t) {
-    this.idle_ = setTimeout(this.onIdle_.bind(this), t);
-  }
+	clearTimeout(this.idle_);
+	if (t) {
+		this.idle_ = setTimeout(this.onIdle_.bind(this), t);
+	}
 };
 
 
@@ -216,14 +194,14 @@ player3D.CastPlayer.prototype.setIdleTimeout_ = function(t) {
  * @private
  */
 player3D.CastPlayer.prototype.setContentType_ = function(mimeType) {
-  if (mimeType.indexOf('image/') == 0) {
-    this.type_ = player3D.Type.IMAGE;
-    if (mimeType.indexOf('x-jps') == 6 || mimeType.indexOf('x-mpo') == 6 ) {
-        this.type_ = player3D.Type.IMAGE3D;
-    }
-  } else if (mimeType.indexOf('video/') == 0) {
-    this.type_ = player3D.Type.VIDEO;
-  }
+	if (mimeType.indexOf('image/') == 0) {
+		this.type_ = player3D.Type.IMAGE;
+		if (mimeType.indexOf('x-jps') > -1 || mimeType.indexOf('x-mpo') > -1 ) {
+		this.type_ = player3D.Type.IMAGE3D;
+		}
+	} else if (mimeType.indexOf('video/') == 0) {
+		this.type_ = player3D.Type.VIDEO;
+	}
 };
 
 
@@ -234,37 +212,38 @@ player3D.CastPlayer.prototype.setContentType_ = function(mimeType) {
  * @param {boolean=} crossfade true if should cross fade between states
  * @param {number=} delay the amount of time (in ms) to wait
  */
-player3D.CastPlayer.prototype.setState_ = function(state, crossfade, delay){
-  var self = this;
-  clearTimeout(self.delay_);
-  if (delay) {
-    var func = function() { self.setState_(state, crossfade); };
-    self.delay_ = setTimeout(func, delay);
-  } else {
-    if (!crossfade) {
-      self.state_ = state;
-      self.element_.className = 'player ' + (self.type_ || '') + ' ' + state;
-      self.setIdleTimeout_(player3D.IDLE_TIMEOUT[state.toUpperCase()]);
-      console.log('setState(%o)', state);
-    } else {
-      player3D.fadeOut_(self.element_, 0.75, function() {
-        self.setState_(state, false);
-        player3D.fadeIn_(self.element_, 0.75);
-      });
-    }
-  }
+player3D.CastPlayer.prototype.setState_ = function(state, crossfade, delay) {
+	var self = this;
+	clearTimeout(self.delay_);
+	if (delay) {
+		var func = function() { self.setState_(state, crossfade); };
+		self.delay_ = setTimeout(func, delay);
+	} else {
+		if (!crossfade) {
+			self.state_ = state;
+			self.element_.className = 'player ' + (self.type_ || '') + ' ' + state;
+			self.setIdleTimeout_(player3D.IDLE_TIMEOUT[state.toUpperCase()]);
+			console.log('setState(%o)', state);
+		} else {
+			player3D.fadeOut_(self.element_, 0.75, function() {
+				self.setState_(state, false);
+				player3D.fadeIn_(self.element_, 0.75);
+			});
+		}
+	}
 };
+
 
 /**
  * Callback called when media has stalled
  *
  */
 player3D.CastPlayer.prototype.onStalled_ = function() {
-  console.log('onStalled');
-  this.setState_(player3D.State.BUFFERING, false);
-  if (this.mediaElement_.currentTime) {
-    this.mediaElement_.load();  // see if we can restart the process
-  }
+	console.log('onStalled');
+	this.setState_(player3D.State.BUFFERING, false);
+	if (this.mediaElement_.currentTime) {
+		this.mediaElement_.load();  // see if we can restart the process
+	}
 };
 
 /**
@@ -272,10 +251,10 @@ player3D.CastPlayer.prototype.onStalled_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onBuffering_ = function() {
-  console.log('onBuffering');
-  if (this.state_ != player3D.State.LOADING) {
-    this.setState_(player3D.State.BUFFERING, false);
-  }
+	console.log('onBuffering');
+	if (this.state_ != player3D.State.LOADING) {
+		this.setState_(player3D.State.BUFFERING, false);
+	}
 };
 
 /**
@@ -283,11 +262,11 @@ player3D.CastPlayer.prototype.onBuffering_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onPlaying_ = function() {
-  console.log('onPlaying');
-  var isLoading = this.state_ == player3D.State.LOADING;
-  var xfade = isLoading;
-  var delay = !isLoading ? 0 : 3000;      // 3 seconds
-  this.setState_(player3D.State.PLAYING, xfade, delay);
+	console.log('onPlaying');
+	var isLoading = this.state_ == player3D.State.LOADING;
+	var xfade = isLoading;
+	var delay = !isLoading ? 0 : 3000;      // 3 seconds
+	this.setState_(player3D.State.PLAYING, xfade, delay);
 };
 
 /**
@@ -295,11 +274,11 @@ player3D.CastPlayer.prototype.onPlaying_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onPause_ = function() {
-  console.log('onPause');
-  if (this.state_ != player3D.State.DONE) {
-    this.setState_(player3D.State.PAUSED, false);
-  };
-  this.updateProgress_();
+	console.log('onPause');
+	if (this.state_ != player3D.State.DONE) {
+		this.setState_(player3D.State.PAUSED, false);
+	};
+this.updateProgress_();
 };
 
 
@@ -308,15 +287,15 @@ player3D.CastPlayer.prototype.onPause_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onStop_ = function() {
-  console.log('onStop');
-  var self = this;
-  player3D.fadeOut_(self.element_, 0.75, function() {
-    self.mediaElement_.pause();
-    self.mediaElement_.removeAttribute('src');
-    self.imageElement_.removeAttribute('src');
-    self.setState_(player3D.State.DONE, false);
-    player3D.fadeIn_(self.element_, 0.75);
-  });
+	console.log('onStop');
+	var self = this;
+	player3D.fadeOut_(self.element_, 0.75, function() {
+		self.mediaElement_.pause();
+		self.mediaElement_.removeAttribute('src');
+		self.imageElement_.removeAttribute('src');
+		self.setState_(player3D.State.DONE, false);
+		player3D.fadeIn_(self.element_, 0.75);
+	});
 };
 
 
@@ -325,8 +304,8 @@ player3D.CastPlayer.prototype.onStop_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onEnded_ = function() {
-  console.log('onEnded');
-  this.setState_(player3D.State.DONE, true);
+	console.log('onEnded');
+	this.setState_(player3D.State.DONE, true);
 };
 
 /**
@@ -334,7 +313,7 @@ player3D.CastPlayer.prototype.onEnded_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onProgress_ = function() {
-  this.updateProgress_();
+	this.updateProgress_();
 };
 
 /**
@@ -342,15 +321,15 @@ player3D.CastPlayer.prototype.onProgress_ = function() {
  *
  */
 player3D.CastPlayer.prototype.updateProgress_ = function() {
-  var curTime = this.mediaElement_.currentTime;
-  var totalTime = this.mediaElement_.duration;
-  if (!isNaN(curTime) && !isNaN(totalTime)) {
-    var pct = 100 * (curTime / totalTime);
-    this.curTimeElement_.innerText = player3D.formatDuration_(curTime);
-    this.totalTimeElement_.innerText = player3D.formatDuration_(totalTime);
-    this.progressBarInnerElement_.style.width = pct + '%';
-    this.progressBarThumbElement_.style.left = pct + '%';
-  }
+	var curTime = this.mediaElement_.currentTime;
+	var totalTime = this.mediaElement_.duration;
+	if (!isNaN(curTime) && !isNaN(totalTime)) {
+		var pct = 100 * (curTime / totalTime);
+		this.curTimeElement_.innerText = player3D.formatDuration_(curTime);
+		this.totalTimeElement_.innerText = player3D.formatDuration_(totalTime);
+		this.progressBarInnerElement_.style.width = pct + '%';
+		this.progressBarThumbElement_.style.left = pct + '%';
+	}
 };
 
 /**
@@ -358,9 +337,9 @@ player3D.CastPlayer.prototype.updateProgress_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onSeekStart_ = function() {
-  console.log('onSeekStart');
-  clearTimeout(this.seekingTimeout_);
-  this.element_.classList.add('seeking');
+	console.log('onSeekStart');
+	clearTimeout(this.seekingTimeout_);
+	this.element_.classList.add('seeking');
 };
 
 /**
@@ -368,10 +347,9 @@ player3D.CastPlayer.prototype.onSeekStart_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onSeekEnd_ = function() {
-  console.log('onSeekEnd');
-  clearTimeout(this.seekingTimeout_);
-  this.seekingTimeout_ = player3D.addClassWithTimeout_(this.element_,
-      'seeking', 3000);
+	console.log('onSeekEnd');
+	clearTimeout(this.seekingTimeout_);
+	this.seekingTimeout_ = player3D.addClassWithTimeout_(this.element_, 'seeking', 3000);
 };
 
 /**
@@ -381,12 +359,12 @@ player3D.CastPlayer.prototype.onSeekEnd_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onVisibilityChange_ = function() {
-  console.log('onVisibilityChange');
-  if (document.webkitHidden) {
-    this.mediaElement_.pause();
-  } else {
-    this.mediaElement_.play();
-  }
+	console.log('onVisibilityChange');
+	if (document.webkitHidden) {
+		this.mediaElement_.pause();
+	} else {
+		this.mediaElement_.play();
+	}
 };
 
 /**
@@ -394,12 +372,12 @@ player3D.CastPlayer.prototype.onVisibilityChange_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onIdle_ = function() {
-  console.log('onIdle');
-  if (this.state_ != player3D.State.IDLE) {
-    this.setState_(player3D.State.IDLE, true);
-  } else {
-    window.close();
-  }
+	console.log('onIdle');
+	if (this.state_ != player3D.State.IDLE) {
+		this.setState_(player3D.State.IDLE, true);
+	} else {
+		window.close();
+	}
 };
 
 /**
@@ -411,8 +389,8 @@ player3D.CastPlayer.prototype.onIdle_ = function() {
  *
  */
 player3D.CastPlayer.prototype.onError_ = function() {
-  console.log('onError');
-  this.setState_(player3D.State.DONE, true);
+	console.log('onError');
+	this.setState_(player3D.State.DONE, true);
 };
 
 /**
@@ -422,58 +400,55 @@ player3D.CastPlayer.prototype.onError_ = function() {
  * @param {cast.receiver.MediaManager.Event} event the load event
  */
 player3D.CastPlayer.prototype.onLoad_ = function(event) {
-  var self = this;
+	var self = this;
 
-  var title = player3D.getValue_(event.data, ['media', 'metadata', 'title']
-      );
-  var titleElement = self.element_.querySelector('.media-title');
-  player3D.setInnerText_(titleElement, title);
+	var title = player3D.getValue_(event.data, ['media', 'metadata', 'title']);
+	var titleElement = self.element_.querySelector('.media-title');
+	player3D.setInnerText_(titleElement, title);
 
-  var subtitle = player3D.getValue_(event.data, ['media', 'metadata',
-      'subtitle']);
-  var subtitleElement = self.element_.querySelector('.media-subtitle');
-  player3D.setInnerText_(subtitleElement, subtitle);
+	var subtitle = player3D.getValue_(event.data, ['media', 'metadata', 'subtitle']);
+	var subtitleElement = self.element_.querySelector('.media-subtitle');
+	player3D.setInnerText_(subtitleElement, subtitle);
 
-  var artwork = player3D.getValue_(event.data, ['media', 'metadata',
-      'images', 0, 'url']);
-  var artworkElement = self.element_.querySelector('.media-artwork');
-  player3D.setBackgroundImage_(artworkElement, artwork);
+	var artwork = player3D.getValue_(event.data, ['media', 'metadata', 'images', 0, 'url']);
+	var artworkElement = self.element_.querySelector('.media-artwork');
+	player3D.setBackgroundImage_(artworkElement, artwork);
+	
+	var autoplay = player3D.getValue_(event.data, ['autoplay']);
+	var contentId = player3D.getValue_(event.data, ['media', 'contentId']);
+	var contentType = player3D.getValue_(event.data, ['media', 'contentType']);
 
-  var autoplay = player3D.getValue_(event.data, ['autoplay']);
-  var contentId = player3D.getValue_(event.data, ['media', 'contentId']);
-  var contentType = player3D.getValue_(event.data, ['media', 'contentType']
-      );
-  self.setContentType_(contentType);
-  self.setState_(player3D.State.LOADING, false);
-  switch (self.type_) {
-    case player3D.Type.IMAGE:
-      self.imageElement_.onload = function() {
-        self.setState_(player3D.State.PAUSED, false);
-      };
-      self.imageElement_.src = contentId || '';
-      self.mediaElement_.removeAttribute('src');
-      break;
-    case player3D.Type.VIDEO:
-      self.imageElement_.onload = null;
-      self.imageElement_.removeAttribute('src');
-      self.mediaElement_.autoplay = autoplay || true;
-      self.mediaElement_.src = contentId || '';
-      break;
-    case player3D.Type.IMAGE3D:
-      var img = new Image();
-      img.src = contentId;
-      img.onload = function() {
-     	  var ctx = self.image3DElement_.getContext('2d');
-    	  ctx.mozImageSmoothingEnabled = false;
-        self.image3DElement_.width=img.width/2;
-    	  self.image3DElement_.height=img.height;
-    	  ctx.drawImage(img, 0, 0, img.width/2, img.height);
-      };
-      self.imageElement_.removeAttribute('src');
-      self.mediaElement_.removeAttribute('src');
-      self.setState_(player3D.State.PAUSED, false);
-      break;
-  }
+	self.setContentType_(contentType);
+	self.setState_(player3D.State.LOADING, false);
+	switch (self.type_) {
+	case player3D.Type.IMAGE:
+		self.imageElement_.onload = function() {
+			self.setState_(player3D.State.PAUSED, false);
+		};
+		self.imageElement_.src = contentId || '';
+		self.mediaElement_.removeAttribute('src');
+		break;
+	case player3D.Type.VIDEO:
+		self.imageElement_.onload = null;
+		self.imageElement_.removeAttribute('src');
+		self.mediaElement_.autoplay = autoplay || true;
+		self.mediaElement_.src = contentId || '';
+		break;
+	case player3D.Type.IMAGE3D:
+		var img = new Image();
+		img.src = contentId;
+		img.onload = function() {
+		  var ctx = self.image3DElement_.getContext('2d');
+		  ctx.mozImageSmoothingEnabled = false;
+		  self.image3DElement_.width=img.width/2;
+		  self.image3DElement_.height=img.height;
+		  ctx.drawImage(img, 0, 0, img.width/2, img.height);
+		};
+		self.imageElement_.removeAttribute('src');
+		self.mediaElement_.removeAttribute('src');
+		self.setState_(player3D.State.PAUSED, false);
+		break;
+	}
 };
 
 /**
@@ -485,14 +460,14 @@ player3D.CastPlayer.prototype.onLoad_ = function(event) {
  * @template R
  */
 player3D.getValue_ = function(obj, keys) {
-  for (var i = 0; i < keys.length; i++) {
-    if (obj === null || obj === undefined) {
-      return '';                    // default to an empty string
-    } else {
-      obj = obj[keys[i]];
-    }
-  }
-  return obj;
+	for (var i = 0; i < keys.length; i++) {
+		if (obj === null || obj === undefined) {
+	  		return '';	// default to an empty string
+		} else {
+	  		obj = obj[keys[i]];
+		}
+	}
+	return obj;
 };
 
 /**
@@ -502,7 +477,7 @@ player3D.getValue_ = function(obj, keys) {
  * @param {string} text The text.
  */
 player3D.setInnerText_ = function(element, text) {
-  element.innerText = text || '';
+	element.innerText = text || '';
 };
 
 /**
@@ -512,8 +487,8 @@ player3D.setInnerText_ = function(element, text) {
  * @param {string} url The image url.
  */
 player3D.setBackgroundImage_ = function(element, url) {
-  element.style.backgroundImage = (url ? 'url("' + url + '")' : 'none');
-  element.style.display = (url ? '' : 'none');
+	element.style.backgroundImage = (url ? 'url("' + url + '")' : 'none');
+	element.style.display = (url ? '' : 'none');
 };
 
 /**
@@ -523,15 +498,15 @@ player3D.setBackgroundImage_ = function(element, url) {
  * @return {string} the time (in HH:MM:SS)
  */
 player3D.formatDuration_ = function(dur) {
-  function digit(n) { return ('00' + Math.round(n)).slice(-2); }
-  var hr = Math.floor(dur / 3600);
-  var min = Math.floor(dur / 60) % 60;
-  var sec = dur % 60;
-  if (!hr) {
-    return digit(min) + ':' + digit(sec);
-  } else {
-    return digit(hr) + ':' + digit(min) + ':' + digit(sec);
-  }
+	function digit(n) { return ('00' + Math.round(n)).slice(-2); }
+	var hr = Math.floor(dur / 3600);
+	var min = Math.floor(dur / 60) % 60;
+	var sec = dur % 60;
+	if (!hr) {
+		return digit(min) + ':' + digit(sec);
+	} else {
+		return digit(hr) + ':' + digit(min) + ':' + digit(sec);
+	}
 };
 
 /**
@@ -546,10 +521,10 @@ player3D.formatDuration_ = function(dur) {
  *                  window.clearTimeout()
  */
 player3D.addClassWithTimeout_ = function(element, className, timeout) {
-  element.classList.add(className);
-  return setTimeout(function() {
-    element.classList.remove(className);
-  }, timeout);
+	element.classList.add(className);
+	return setTimeout(function() {
+		element.classList.remove(className);
+	}, timeout);
 };
 
 /**
@@ -560,7 +535,7 @@ player3D.addClassWithTimeout_ = function(element, className, timeout) {
  * @param {function()=} doneFunc the function to call when complete
  */
 player3D.fadeIn_ = function(element, time, doneFunc) {
-  player3D.fadeTo_(element, '', time, doneFunc);
+	player3D.fadeTo_(element, '', time, doneFunc);
 };
 
 /**
@@ -571,7 +546,7 @@ player3D.fadeIn_ = function(element, time, doneFunc) {
  * @param {function()=} doneFunc the function to call when complete
  */
 player3D.fadeOut_ = function(element, time, doneFunc) {
-  player3D.fadeTo_(element, 0, time, doneFunc);
+	player3D.fadeTo_(element, 0, time, doneFunc);
 };
 
 /**
@@ -583,15 +558,15 @@ player3D.fadeOut_ = function(element, time, doneFunc) {
  * @param {function()=} doneFunc the function to call when complete
  */
 player3D.fadeTo_ = function(element, opacity, time, doneFunc) {
-  var listener = null;
-  listener = function() {
-    element.style.webkitTransition = '';
-    element.removeEventListener('webkitTransitionEnd', listener, false);
-    if (doneFunc) {
-      doneFunc();
-    }
-  };
-  element.addEventListener('webkitTransitionEnd', listener, false);
-  element.style.webkitTransition = 'opacity ' + time + 's';
-  element.style.opacity = opacity;
+	var listener = null;
+	listener = function() {
+		element.style.webkitTransition = '';
+		element.removeEventListener('webkitTransitionEnd', listener, false);
+		if (doneFunc) {
+			doneFunc();
+		}
+	};
+	element.addEventListener('webkitTransitionEnd', listener, false);
+	element.style.webkitTransition = 'opacity ' + time + 's';
+	element.style.opacity = opacity;
 };

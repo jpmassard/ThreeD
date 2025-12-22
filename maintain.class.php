@@ -1,8 +1,8 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD          http://jpmassard.fr |
+// | Copyright(C) 2014-2026 Jean-Paul MASSARD          http://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -25,60 +25,70 @@ define('THREED_DIRECTORY', PHPWG_PLUGINS_PATH . basename(dirname(__FILE__)) . '/
 
 class ThreeD_maintain extends PluginMaintain
 {
-  private $installed = false;
-  
-  private $default_conf = array(
-    'chromeCast' => 0,
-    'openGraph'  => 0,
-    'video_autoplay' => 0,
-    'video_autoloop' => 0,
-    );
-    
-  private $table;
-  
-  function __construct($plugin_id)
-  {
-    global $prefixeTable;
-    
-    parent::__construct($plugin_id);
-    
-    // $this->table = $prefixeTable . 'threed_image_video';
-  }
+	private $installed = false;
+	
+	private $default_conf = array(
+		'chromeCast' => 0,
+		'openGraph'  => 1,
+		'video_autoplay' => 1,
+		'video_autoloop' => 0,
+		'icon2Dphoto' => 0,
+		'icon2Dvideo' => 0,
+		'icon3Dphoto' => 1,
+		'icon3Dvideo' => 1,
+		'iconposition' => 'center',
+		'iconxpos' => 0,
+		'iconypos' => 0,
+		'iconalpha' => 0.7,
+		);
+	
+	function __construct($plugin_id)
+	{
+		parent::__construct($plugin_id);
+	}
 
-  function install($plugin_version, &$errors=array())
-  {
-    global $conf;
+	function install($plugin_version, &$errors=array())
+	{
+		global $conf;
+	
+		// add config parameter
+		if (empty($conf['threed']))
+		{
+			// conf_update_param well serialize and escape array before database insertion
+			// the third parameter indicates to update $conf['threed'] global variable as well
+			conf_update_param('threed', $this->default_conf, true);
+			// Add columns is3D and isPano. Ensure all existing pictures have is3D false
+			$query = 'ALTER TABLE ' .IMAGES_TABLE. ' ADD is3D TINYINT NOT NULL DEFAULT 0, ADD isPano TINYINT NOT NULL DEFAULT 0;';
+			pwg_query($query);
+			// If plugin have been uninstalled, search JPS and MPO files and mark them 3D
+			$query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=1 WHERE path LIKE \'%.jps\' OR path LIKE \'%.mpo\'';
+			pwg_query($query);
+		}
+		$this->installed = true;
+	}
+	
+	function activate($plugin_version, &$errors=array())
+	{
+		if (!$this->installed)
+		{
+			$this->install($plugin_version, $errors);
+		}
+		copy (PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php', THREED_DIRECTORY.'functions_upload.inc.php.old');
+		copy (THREED_DIRECTORY.'functions_upload.inc.php.new', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
+	}
 
-    // add config parameter
-    if (empty($conf['threed']))
-    {
-      // conf_update_param well serialize and escape array before database insertion
-      // the third parameter indicates to update $conf['threed'] global variable as well
-      conf_update_param('threed', $this->default_conf, true);
-    }
-    $this->installed = true;
-  }
+	function deactivate()
+	{
+		copy (THREED_DIRECTORY.'functions_upload.inc.php.old', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
+	}
 
-  function activate($plugin_version, &$errors=array())
-  {
-    if (!$this->installed)
-    {
-      $this->install($plugin_version, $errors);
-    }
-    copy (PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php', THREED_DIRECTORY.'functions_upload.inc.php.old');
-    copy (THREED_DIRECTORY.'functions_upload.inc.php.new', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
-  }
-
-  function deactivate()
-  {
-      copy (THREED_DIRECTORY.'functions_upload.inc.php.old', PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
-  }
-
-  function uninstall()
-  {
-    conf_delete_param('threed');
-    $this->deactivate();
-  }
+	function uninstall()
+	{
+		conf_delete_param('threed');
+		$query = 'ALTER TABLE ' .IMAGES_TABLE. ' DROP COLUMN is3D, DROP COLUMN isPano;';
+		pwg_query($query);
+		$this->deactivate();
+	}
 }
-  
+
 ?>

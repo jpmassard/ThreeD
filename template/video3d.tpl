@@ -11,14 +11,29 @@ canvas{
 {/html_style}
 {html_head}
 {if $THREED_CONF.openGraph}
+
+<!-- Facebook tags -->
 <meta property="og:type" content="video.other">
+
 <meta property="og:url" content="{$URL}">
-<meta property="og:description" content="{$DESCRIPTION}">
+<meta property="og:description" content="3D Stereoscopic video - {$DESCRIPTION}">
+{if $AUTHOR != null }
+<meta property="og:site_name" content="{$AUTHOR}">
 {/if}
-<script type="text/javascript" 
-	src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.js"></script>
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{$TITLE}" />
+<meta name="twitter:description" content="3D Stereoscopic video - {$DESCRIPTION}" />
+<meta name="twitter:image" content="{$REPRESENT}" />
+{if $AUTHOR != null }
+<meta property="twitter:site" content="{$AUTHOR}">
+{/if}
+
+{/if}
+<script type="text/javascript" src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$THREED_PATH}vws/VWS.css" />
-<script type="text/javascript" src="{$THREED_PATH}vws/VWS.js"></script>
+<script type="text/javascript" src="{$THREED_PATH}vws/VWS.min.js"></script>
 <script type="text/javascript">
 	VWS.START = function() {
 		VWS.player.realAnaglyphs = {
@@ -28,6 +43,8 @@ canvas{
 		};
 	    var aspect = 16 / 9;
 	    var player = new VWS.player.S3dVideoPlayerApp('stereo');
+	    player.autoPlay(false);
+	    player.autoLoop(false);
         {if $THREED_CONF.video_autoplay}
         player.autoPlay(true);
         {/if}

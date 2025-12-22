@@ -11,11 +11,25 @@ canvas{
 {/html_style}
 {html_head}
 {if $THREED_CONF.openGraph}
-<meta property="og:type" content="article">
+
+<!-- Facebook tags -->
+<meta property="og:type" content="website">
 <meta property="og:image" content="{$REPRESENT}">
 <meta property="og:url" content="{$URL}">
-<meta property="og:description" content="{$DESCRIPTION}">
-<meta property="og:author" content="{$AUTHOR}">
+<meta property="og:description" content="3D Stereoscopic image - {$DESCRIPTION}">
+{if $AUTHOR != null }
+<meta property="og:site_name" content="{$AUTHOR}">
+{/if}
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{$TITLE}" />
+<meta name="twitter:description" content="3D Stereoscopic image - {$DESCRIPTION}" />
+<meta name="twitter:image" content="{$REPRESENT}" />
+{if $AUTHOR != null }
+<meta property="twitter:site" content="{$AUTHOR}">
+{/if}
+
 {/if}
 <script type="text/javascript" src="{$PHPWG_ROOT_PATH}themes/default/js/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{$THREED_PATH}vws/VWS.css" />

@@ -9,8 +9,10 @@
 				<label>
 					<span class="property">{'JPEG representative file to upload'|@translate}</span>
 				</label>
-				<input name="file" type="file" value=""{if isset($uploader_errors.file)} class="uploader_error"{/if} multiple>
-				{foreach from=$uploader_errors.file item=error_description}<span style="color:red" class="file_uploader_error_description">{$error_description}</span>{/foreach}
+				<input name="file" type="file" value="" {if isset($uploader_errors.file)} class="uploader_error"{/if} multiple>
+				{if isset($uploader_errors.file)}
+					{foreach from=$uploader_errors.file item=error_description}<span style="color:red" class="file_uploader_error_description">{$error_description}</span>{/foreach}
+				{/if}
 			</p>
 		</fieldset>
 		<p>

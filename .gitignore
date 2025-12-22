@@ -1,2 +1,3 @@
 *.bak
-functions_upload.inc.php.old
+*.old
+Cast3D/

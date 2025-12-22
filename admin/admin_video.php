@@ -2,7 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo and video extension for Piwigo                    |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD                              |
+// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -36,9 +36,9 @@ $repExt= $row['representative_ext'];
 
 $representative_file_path = dirname($file_path).'/pwg_representative/';
 $representative_file_path.= get_filename_wo_extension(basename($file_path)).'.jpg';
+$uploader_errors = array();
 
 if (isset($_POST['submit'])) {
-	$uploader_errors = array();
     $file = array();
     
 	if($_FILES['file']['error'] == UPLOAD_ERR_OK) {

@@ -47,7 +47,25 @@ Quelques notes sur la mise à jour des plugins Piwigo
       else
       {
 
-2) Il y a une légère incompatibilité entre le plugin "osmap" et le thème "bootstrap default".
+2) Dans Piwigo/themes/BootstrapDefault/theme.css il faut commenter la balise #theImage img
+
+#theImage {
+  position: relative;
+  overflow-x: hidden;
+  text-align: center;
+}
+/*#theImage img {
+  max-width: 100%;
+  height: auto;
+} */
+#sidebar {
+  position: absolute;
+  right: -250px;
+  text-align: left;
+  z-index: 10000;
+}
+
+3) Il y a une légère incompatibilité entre le plugin "osmap" et le thème "bootstrap default".
 L'icone du globe n'est alors pas affchée. Dans le fichier main.inc.php, definir la fonction
 
 function get_osm_action_model()

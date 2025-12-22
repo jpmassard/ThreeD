@@ -1,8 +1,8 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2017 Jean-Paul MASSARD          http://jpmassard.fr |
+// | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -22,28 +22,51 @@
 defined('THREED_PATH') or die('Hacking attempt!');
 
 // Add ChromeCast functions
-function add_cast_api()
-{
-  global $conf, $template;
-  if ($conf['threed']['chromeCast'] == 1 and script_basename()=='index')
-  {
-    $jQuery= '<script type="text/javascript" src= "' . PHPWG_ROOT_PATH.'themes/default/js/jquery.min.js"' . '></script>';
-	  $template->append('footer_elements', $jQuery);
-	  $template->append('footer_elements', '
-      <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-	    <script type="text/javascript" src="plugins/ThreeD/ChromeCast/cast.js"></script>');
-  }
-}
+add_event_handler('loc_begin_page_tail', function () {
+	global $conf, $template, $page;
 
-function add_cast_btn()
-{
-    global $conf, $template;
-    if ($conf['threed']['chromeCast'] == 1 and script_basename()=='index')
-    {
-	    $template->set_filename('cast_button', realpath(THREED_PATH.'template/castbutton.tpl'));
-      $template->assign(array( 'THREED_PATH' => THREED_PATH,));
-	    $button = $template->parse('cast_button', true);
-	    $template->add_index_button($button, BUTTONS_RANK_NEUTRAL);
+	if ($conf['threed']['chromeCast'] == 1 and isset($page['category'])) {
+		$template->append('footer_elements', '
+		<script type="text/javascript" src="plugins/ThreeD/ChromeCast/cast.js"></script>
+		<script type="text/javascript">
+			var castPlayer = new CastPlayer();
+			window["__onGCastApiAvailable"] = function(isAvailable) {
+				if (isAvailable) {
+					castPlayer.initialize();
+				}
+			};
+		</script>
+		<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>');
 	}
-}
+});
 
+add_event_handler('blockmanager_apply', function ($menu_ref) {
+	global $conf, $user, $page, $template;
+	if ($conf['threed']['chromeCast'] == 1 and isset($page['category'])) {
+		$bootstp = stripos($user['theme'], 'bootstrap') !== false;
+		$template->set_filename('cast_button', realpath(THREED_PATH.'template/castbutton.tpl'));
+		$template->assign(array(
+			'TYPE'=> true,
+			'BOOTSTRAP' => $bootstp,
+		));
+		$button = $template->parse('cast_button', true);
+		$template->add_index_button($button);
+	}
+});
+
+/*
+add_event_handler('loc_end_picture', function () {
+	global $conf, $template, $user;
+	
+	if ($conf['threed']['chromeCast'] == 1) {
+		$bootstp = stripos($user['theme'], 'bootstrap') !== false;
+		$template->set_filename('cast_button', realpath(THREED_PATH.'template/castbutton.tpl'));
+		$template->assign(array(
+			'TYPE'=> false,
+			'BOOTSTRAP' => $bootstp,
+		));
+		$button = $template->parse('cast_button', true);
+		$template->add_picture_button($button);
+	}
+});
+*/
