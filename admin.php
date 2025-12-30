@@ -1,6 +1,6 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
 // | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
@@ -25,7 +25,7 @@ include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
 
 check_status(ACCESS_ADMINISTRATOR);
 
-global $template, $page;
+global $template, $page, $conf;
 
 //load_language('plugin.lang', THREED_PATH);
 
@@ -61,47 +61,92 @@ if (isset($_POST['save_config']))
   	$page['infos'][] = l10n('Your configuration settings are saved');
   }
   unset($_POST['save_config']);
+} 
+
+elseif (isset($_POST['save_settings'])) {
+	$image_id = $page['tab'];
+	if(isset($_POST['3Dmaterial']) && $_POST['3Dmaterial'] == 'on') {
+		set_3D_material($image_id, 1);
+	}else {
+		set_3D_material($image_id, 0);
+	}
+	if(isset($_POST['uploadRepresentative']) && $_POST['uploadRepresentative'] == 'on') {
+		if(isset($_FILES['rFile']) ) {
+			 $name = $_FILES['rFile']['name'];
+			 if($name != '') {
+				include_once(PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
+
+			 	$img_infos = get_image_infos($image_id, true);
+      			$file_path = $img_infos['path'];
+
+      			// Create the new file in pwg_representative sub-directory
+      			$representative_file_path = dirname($file_path).'/pwg_representative/' . get_filename_wo_extension(basename($file_path)).'.';
+
+				// In replace case, delete old representative file and derivatives
+      			if($img_infos['representative_ext'] != null) {
+					@unlink($representative_file_path . $img_infos['representative_ext']);
+				    delete_element_derivatives($img_infos);
+				}
+				$rExt = get_extension($name);
+				$representative_file_path.= $rExt;
+
+      			prepare_directory(dirname($representative_file_path));
+      			move_uploaded_file($_FILES['rFile']['tmp_name'], $representative_file_path);
+
+				$query = 'UPDATE ' . IMAGES_TABLE . ' SET representative_ext=\'' . $rExt . '\' WHERE id=\'' . $image_id .'\';';
+				pwg_query($query);
+
+				// Everything is OK, tell this to admin
+				$page['infos']['rFile'] = l10n('The representative picture was updated');
+
+			} else {
+				$errors['rFile'] = l10n('A representative picture must be selected');
+			}
+		}
+	}
+	unset($_POST['save_settings']);
 }
 
 $themeconf = $template->get_template_vars('themeconf');
 
-if('config' == $page['tab']) {
-  // tabsheet
-  include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
-  $tabsheet = new tabsheet();
-  $tabsheet->add('config', l10n('Configuration'), THREED_ADMIN . '-config');
-  $tabsheet->select('config');
-  $tabsheet->assign();
+// tabsheet
+include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
+$tabsheet = new tabsheet();
 
-  // template
-  $template->set_filename('threed_admin_content', dirname(__FILE__).'/admin/template/config.tpl');
-  $template->assign(array(
-    'threed' => $conf['threed'],
-    'theme' => $themeconf,
-  ));
-  if(count($errors) != 0) $template->assign('errors', $errors);
+if('config' == $page['tab']) {
+	$tabsheet->add('config', l10n('Configuration'), THREED_ADMIN . '-config');
+	$tabsheet->select('config');
+	$tabsheet->assign();
+	
+	// template
+	$template->set_filename('threed_admin_content', dirname(__FILE__).'/admin/template/config.tpl');
+	$template->assign(array(
+		'threed' => $conf['threed'],
+		'theme' => $themeconf,
+	));
 }
 else {
-	$_GET['image_id'] = $_GET['tab'];
-	check_input_parameter('image_id', $_GET, false, PATTERN_ID);
-	$admin_photo_base_url = get_root_url().'admin.php?page=photo-'.$_GET['image_id'];
+//	$_GET['image_id'] = $_GET['tab'];
+	check_input_parameter('tab', $_GET, false, PATTERN_ID);
+	$image_id = $_GET['tab'];
+	$admin_photo_base_url = get_root_url().'admin.php?page=photo-'. $image_id;
 	
-	$tabsheet = new tabsheet();
 	$tabsheet->set_id('photo');
 	$tabsheet->select('threed');
 	$tabsheet->assign();
 	
-	$template->set_filename('threed_admin_content', dirname(__FILE__).'/template/image_config.tpl');
+	$template->set_filename('threed_admin_content', dirname(__FILE__).'/admin/template/image_admin.tpl');
 	
 	$template->assign(array(
-//		'TITLE' => render_element_name($picture),
-		'image_id' => (int)@$_GET['image_id'],
-		'random_avoid_cache_key' => generate_key(10),
-		'ADMIN_PAGE_TITLE' => l10n('Edit photo').' <span class="image-id">#'.$_GET['image_id'].'</span>',
-    'theme' => $themeconf,
-		));
+		'ADMIN_PAGE_TITLE' => l10n('Edit photo').' <span class="image-id">#'.$image_id.'</span>',
+		'is3D' => is_3D_material($image_id),
+		'image_id' => (int)$image_id,
+		'threed' => $conf['threed'],
+		'theme' => $themeconf,
+	));
 }
+	if(count($errors) != 0) $template->assign('errors', $errors);
+	$template->assign_var_from_handle('ADMIN_CONTENT', 'threed_admin_content');
+	unset($errors);
 
-$template->assign_var_from_handle('ADMIN_CONTENT', 'threed_admin_content');
-unset($errors);
 ?>

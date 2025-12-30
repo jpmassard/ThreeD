@@ -42,11 +42,11 @@ canvas{
 		AGMF: 'AGMF'
 	};
 
-	{if $EXTENSION == 'jpg'}
+	{* if $EXTENSION == 'jpg'}
   var viewer = new VWS.player.ImageViewerApp('stereo');
-  {else}
+  {else *}
   var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');
-  {/if}
+  {* /if *}
   
 	var aspectRatio= {$FILE_INFO['width']}/{$FILE_INFO['height']};
 	{if $EXTENSION == 'jps'} 

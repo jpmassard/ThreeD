@@ -24,8 +24,9 @@ Plugin Name: ThreeD
 Version: 16.0.0
 Description: 3D photo, video and 360 panorama viewer plugin. JPS, MPO and stereo side-by-side mp4 file formats are supported
 Plugin URI: https://piwigo.org/ext/extension_view.php?eid=869
-Author: JP Massard
+Author: JP MASSARD
 Author URI: https://jpmassard.fr
+Has Settings: true
 */
 
 defined('PHPWG_ROOT_PATH') or die('Hacking attempt!');
@@ -38,16 +39,19 @@ define('THREED_PATH',    PHPWG_PLUGINS_PATH . THREED_ID . '/');
 define('THREED_ADMIN',   get_root_url() . 'admin.php?page=plugin-' . THREED_ID);
 
 // 
-function is_3D_material($id)
-{
+function is_3D_material($id) {
 	$query = 'SELECT is3D FROM '.IMAGES_TABLE. ' WHERE id='.$id;
 	$element_info = pwg_db_fetch_assoc(pwg_query($query));
 	return $element_info ['is3D'] != 0;
 }
 
+function set_3D_material($id, $val) {
+	$query = 'UPDATE '.IMAGES_TABLE. ' SET is3D=' . $val . ' WHERE id='.$id;
+	pwg_query($query);
+}
+
 // Threed plugin initialisation
-add_event_handler('init', function()
-{
+add_event_handler('init', function() {
 	global $conf,$threed_image_exts;
 
 	// Add 3D extension support for images
@@ -68,28 +72,15 @@ add_event_handler('init', function()
 	$conf['threed'] = safe_unserialize($conf['threed']);
 });
 
-// Hook some events to show the administration page.
 if (defined('IN_ADMIN')) {
-	// Admin plugins menu link
-	add_event_handler('get_admin_plugin_menu_links', function ($menu) {
-		$menu[] = array(
-		'NAME' => 'ThreeD',
-		'URL' => THREED_ADMIN,
-		);
-	return $menu;
-	});
-
-	// Add an photo edit tab in photo edit
+	// Add a ThreeD photo edit tab in photo edit
 	add_event_handler('tabsheet_before_select', function($sheets, $id) {
 		if ($id == 'photo')
 		{
 			$image_id = isset($_GET['image_id'])? $_GET['image_id'] : '';
-			if(is_3D_material($image_id))
-			{
-				$sheets['threed'] = array(
-					'caption' => 'ThreeD',
-					'url' => THREED_ADMIN . '-' . $image_id);
-			}
+			$sheets['threed'] = array(
+				'caption' => 'ThreeD',
+				'url' => THREED_ADMIN . '-' . $image_id);
 		}
 		return $sheets;
 	});
@@ -117,3 +108,6 @@ add_event_handler ('upload_file', 'upload_threed_picture',
 add_event_handler ('upload_file', 'upload_threed_video',
 	EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_video.inc.php');
 
+// Add handler to show media type on thumbnails
+add_event_handler ('loc_begin_index_thumbnails', 'threed_add_icons',
+	EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/add_icons.php');
