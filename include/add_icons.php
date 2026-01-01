@@ -38,9 +38,20 @@ function threed_add_icons ($pictures) {
 //		if($conf['threed']['icon360Pano'] && $pictures[$i]['isPano']) $show_icons[$i][] = 'icon_360';
 	}
 	
+	switch($conf['threed']['iconposition']) {
+		case 'topleft': $x = 0; $y = 0; break;
+		case 'topright': $x = 100; $y = 0; break;
+		case 'center': $x = 50; $y = 50; break;
+		case 'bottomleft': $x = 0; $y = 100; break;
+		case 'bottomright': $x = 100; $y = 100; break;
+		case 'custom': $x = $conf['threed']['iconxpos']; $y = $conf['threed']['iconypos']; break;
+	}
 	$template->assign(array(
 		'icons'=> json_encode($show_icons),
 		'path' => THREED_PATH,
+		'x' => $x,
+		'y' => $y,
+		'alpha' => $conf['threed']['iconalpha'],
 	));
     $template->set_filename('threed_add_icons', THREED_PATH . 'template/add_icons.tpl');
     $template->parse('threed_add_icons');

@@ -139,7 +139,7 @@
           </label>
           <label class="font-checkbox">
           	<span class="icon-dot-circled"></span>
-          	<input name="iconposition" type="radio" value="bottomleft"{if $threed.iconposition eq 'topright'}checked{/if}> {'bottom left corner'|translate}
+          	<input name="iconposition" type="radio" value="bottomleft"{if $threed.iconposition eq 'bottomleft'}checked{/if}> {'bottom left corner'|translate}
           </label>
         </div>
 
