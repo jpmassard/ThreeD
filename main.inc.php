@@ -45,8 +45,19 @@ function is_3D_material($id) {
 	return $element_info ['is3D'] != 0;
 }
 
+function is_pano($id) {
+	$query = 'SELECT isPano FROM '.IMAGES_TABLE. ' WHERE id='.$id;
+	$element_info = pwg_db_fetch_assoc(pwg_query($query));
+	return $element_info ['isPano'] != 0;
+}
+
 function set_3D_material($id, $val) {
 	$query = 'UPDATE '.IMAGES_TABLE. ' SET is3D=' . $val . ' WHERE id='.$id;
+	pwg_query($query);
+}
+
+function set_pano($id, $val) {
+	$query = 'UPDATE '.IMAGES_TABLE. ' SET isPano=' . $val . ' WHERE id='.$id;
 	pwg_query($query);
 }
 
@@ -111,3 +122,8 @@ add_event_handler ('upload_file', 'upload_threed_video',
 // Add handler to show media type on thumbnails
 add_event_handler ('loc_begin_index_thumbnails', 'threed_add_icons',
 	EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/add_icons.php');
+
+// Add to delete the panorama directory structure
+add_event_handler('begin_delete_elements', 'threed_delete',
+	EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/delete.php');
+

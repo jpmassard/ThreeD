@@ -92,28 +92,35 @@
 	<li>
 		<label class="font-checkbox">
 			<span class="icon-check"></span>
-			<input type="checkbox" name="photo2d" {if $threed.icon2Dphoto}checked{/if}>{'draw a 2D icon on a 2D photo'|translate}
+			<input type="checkbox" name="photo2d" {if $threed.icon2Dphoto}checked{/if}>{'draw a 2D icon on each 2D photo'|translate}
 		</label>
 	</li>
 
 	<li>
 		<label class="font-checkbox">
 			<span class="icon-check"></span>
-			<input type="checkbox" name="photo3d" {if $threed.icon3Dphoto}checked{/if}>{'draw a 3D icon on a 3D photo'|translate}
+			<input type="checkbox" name="photo3d" {if $threed.icon3Dphoto}checked{/if}>{'draw a 3D icon on each 3D photo'|translate}
 		</label>
 	</li>
 	
 	<li>
 		<label class="font-checkbox">
 			<span class="icon-check"></span>
-			<input type="checkbox" name="video2d" {if $threed.icon2Dvideo}checked{/if}>{'draw a 2D icon on a 2D video'|translate}
+			<input type="checkbox" name="video2d" {if $threed.icon2Dvideo}checked{/if}>{'draw a 2D icon on each 2D video'|translate}
 		</label>
 	</li>
 
 	<li>
 		<label class="font-checkbox">
 			<span class="icon-check"></span>
-			<input type="checkbox" name="video3d" {if $threed.icon3Dvideo}checked{/if}>{'draw a 3D icon on a 3D video'|translate}
+			<input type="checkbox" name="video3d" {if $threed.icon3Dvideo}checked{/if}>{'draw a 3D icon on each 3D video'|translate}
+		</label>
+	</li>
+	
+	<li>
+		<label class="font-checkbox">
+			<span class="icon-check"></span>
+			<input type="checkbox" name="pano360" {if $threed.icon360Pano}checked{/if}>{'draw a 360 icon on each panorama'|translate}
 		</label>
 	</li>
 	
@@ -150,13 +157,13 @@
 
         <div id="positionCustomDetails">
           <label>{'X Position'|translate}
-            <input size="3" maxlength="3" type="text" name="iconxpos" value="{$threed.iconxpos}"{if isset($errors.xpos)} class="dError"{/if}>%
+            <input size="3" maxlength="3" type="text" name="iconxpos" value="{$threed.iconxpos}"{if isset($errors.xpos)} class="dError"{/if}> %
             {if isset($errors.xpos)}<span class="dErrorDesc" title="{$errors.xpos}">!</span>{/if}
           </label>
 
           <br>
           <label>{'Y Position'|translate}
-            <input size="3" maxlength="3" type="text" name="iconypos" value="{$threed.iconypos}"{if isset($errors.ypos)} class="dError"{/if}>%
+            <input size="3" maxlength="3" type="text" name="iconypos" value="{$threed.iconypos}"{if isset($errors.ypos)} class="dError"{/if}> %
             {if isset($errors.ypos)}<span class="dErrorDesc" title="{$errors.ypos}">!</span>{/if}
           </label>
 

@@ -42,7 +42,7 @@ canvas{
 		AGMF: 'AGMF'
 	};
 
-	{* if $EXTENSION == 'jpg'}
+	{* if $EXTENSION == 'jpg' }
   var viewer = new VWS.player.ImageViewerApp('stereo');
   {else *}
   var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');

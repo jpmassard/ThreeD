@@ -1,23 +1,8 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
-// | Add OpenGraph tags to category pages and 3D pictures                  |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
 // | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
-// +-----------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify  |
-// | it under the terms of the GNU General Public License as published by  |
-// | the Free Software Foundation                                          |
-// |                                                                       |
-// | This program is distributed in the hope that it will be useful, but   |
-// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
-// | General Public License for more details.                              |
-// |                                                                       |
-// | You should have received a copy of the GNU General Public License     |
-// | along with this program; if not, write to the Free Software           |
-// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
-// | USA.                                                                  |
 // +-----------------------------------------------------------------------+
 
 defined('THREED_PATH') or die('Hacking attempt!');
@@ -35,7 +20,7 @@ function threed_add_icons ($pictures) {
 		if($conf['threed']['icon3Dvideo'] && $is3D && $is_video) $show_icons[$i][] = 'icon_3D';
 		if($conf['threed']['icon2Dphoto'] && !$is3D && $is_photo) $show_icons[$i][] = 'icon_2D';
 		if($conf['threed']['icon3Dphoto'] && $is3D && $is_photo) $show_icons[$i][] = 'icon_3D';
-//		if($conf['threed']['icon360Pano'] && $pictures[$i]['isPano']) $show_icons[$i][] = 'icon_360';
+		if($conf['threed']['icon360Pano'] && $pictures[$i]['isPano']) $show_icons[$i][] = 'icon_360';
 	}
 	
 	switch($conf['threed']['iconposition']) {

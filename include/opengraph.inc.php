@@ -55,18 +55,17 @@ add_event_handler('loc_begin_index', function () {
 			{
 				$img = '';
 				$ext = '';
-				$query = '
-				SELECT id, file, path, representative_ext
-				FROM '.IMAGES_TABLE.'
-				WHERE id = '.$category['representative_picture_id'].'
-				;';
-	
+				$query = 'SELECT id, file, path, representative_ext FROM '.IMAGES_TABLE.' WHERE id = '.$category['representative_picture_id'].';';
 				$result = pwg_query($query);
 				if (pwg_db_num_rows($result) > 0)
 				{
 					$element = pwg_db_fetch_assoc($result);
 					$ext = get_extension($element['path']);
-					$img = get_absolute_root_url().substr (original_to_representative( get_element_path($element), $element['representative_ext'] ),4);
+					if($ext == 'jpg') {
+						$img = get_absolute_root_url().get_element_url($element);
+					} else {
+						$img = get_absolute_root_url().substr (original_to_representative( get_element_url($element), $element['representative_ext'] ),4);
+					}
 				}
 				else
 					return;

@@ -36,6 +36,7 @@ class ThreeD_maintain extends PluginMaintain
 		'icon2Dvideo' => 0,
 		'icon3Dphoto' => 1,
 		'icon3Dvideo' => 1,
+		'icon360Pano' => 1,
 		'iconposition' => 'center',
 		'iconxpos' => 0,
 		'iconypos' => 0,

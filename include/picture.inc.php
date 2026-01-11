@@ -2,21 +2,7 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
-// +-----------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify  |
-// | it under the terms of the GNU General Public License as published by  |
-// | the Free Software Foundation                                          |
-// |                                                                       |
-// | This program is distributed in the hope that it will be useful, but   |
-// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
-// | General Public License for more details.                              |
-// |                                                                       |
-// | You should have received a copy of the GNU General Public License     |
-// | along with this program; if not, write to the Free Software           |
-// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
-// | USA.                                                                  |
+// | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 
 defined('THREED_PATH') or die('Hacking attempt!');
@@ -72,6 +58,32 @@ function threed_render_image($content, $image)
 	return $template->parse($is_image ? 'threed_photo_content' : 'threed_video_content', true);
 }
 
+function threed_render_panorama($content, $image)
+{
+	global $conf, $template;
+
+	$element = $image['element_url'];
+	if (!isset($element) or !empty($content))
+	{ // nothing to do or someone hooked us - so we skip;
+		return $content;
+	} 
+	
+	$template->set_filename('threed_pano_content', THREED_PATH . 'template/panorama.tpl'); 
+	$template->assign( 
+		array(
+			'THREED_PATH'     => THREED_PATH,
+			'THREED_CONF'     => $conf['threed'],
+			'SRC_XML'         => get_filename_wo_extension($element).'.xml',
+			'REPRESENT'       => get_absolute_root_url().substr ($image['src_image']->rel_path, 2),
+			'URL'		      => get_absolute_root_url().$image['url'],
+			'DESCRIPTION'     => $image['comment'],
+			'AUTHOR'          => $image['author'],
+			'TITLE'           => $image['TITLE'],
+		 )
+	);
+	return $template->parse('threed_pano_content', true);
+}
+
 
 // some stuff at the begining of picture.php
 function threed_prepare_picture($picture)
@@ -83,6 +95,10 @@ function threed_prepare_picture($picture)
 		add_event_handler('render_element_content', 'threed_render_image', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
 		add_event_handler('get_element_metadata_available', 'threed_metadata_available');
 	}
+	if ($picture['current']['isPano'] != 0) {
+		add_event_handler('render_element_content', 'threed_render_panorama', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
+	}
+	
 	return $picture;
 }
 

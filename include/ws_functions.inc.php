@@ -1,6 +1,6 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo ,video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
 // | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+

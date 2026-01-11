@@ -1,4 +1,4 @@
-{combine_script id='common2' load='footer' path='admin/themes/default/js/common.js'}
+{combine_script id='common' load='footer' path='admin/themes/default/js/common.js'}
 
 {footer_script}
 (function(){
