@@ -1,7 +1,7 @@
 {footer_script}
-{if $FRAMEWORK == 1}
+{if  $FRAMEWORK == 'krpano'}
 	embedpano({ldelim}xml:"{$SRC_XML}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:"false"{rdelim});
-{else}
+{elseif $FRAMEWORK == 'pannellum'}
 pannellum.viewer('pano', {
 	"type": "multires",
 	"multiRes": {
@@ -14,6 +14,7 @@ pannellum.viewer('pano', {
 		"cubeResolution": 8432
 	}
 });
+{elseif $FRAMEWORK == '3dvista'}
 {/if}
 {/footer_script}
 
@@ -48,16 +49,17 @@ pannellum.viewer('pano', {
 
 {/if}
 
-{if $FRAMEWORK == 2}
+{if $FRAMEWORK == 'pannellum'}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 {/if}
 {/html_head}
 
 <div id="pano" style="width:100%;height:768px;">
 	<noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
-{if $FRAMEWORK == 1}
+{if $FRAMEWORK == 'krpano'}
 	<script src="{$THREED_PATH|cat:'krpano/krpano.js'}" ></script>
-{else}
+{elseif $FRAMEWORK == 'pannellum'}
 	<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+{elseif $FRAMEWORK == '3dvista'}
 {/if}
 </div>	

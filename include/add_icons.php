@@ -22,7 +22,7 @@ function threed_add_icons ($pictures)
         if($conf['threed']['icon3Dvideo'] and $is3D and $is_video) $show_icons[$i][] = 'icon_3D';
         if($conf['threed']['icon2Dphoto'] and !$is3D and $is_photo) $show_icons[$i][] = 'icon_2D';
         if($conf['threed']['icon3Dphoto'] and $is3D and $is_photo) $show_icons[$i][] = 'icon_3D';
-        if($conf['threed']['icon360Pano'] and $pictures[$i]['isPano']) $show_icons[$i][] = 'icon_360';
+        if($conf['threed']['icon360Pano'] and $pictures[$i]['pano_type'] != 'none') $show_icons[$i][] = 'icon_360';
     }
     
     switch($conf['threed']['iconposition'])

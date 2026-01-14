@@ -52,6 +52,7 @@
 <div class="ThreeD_options">
 
 <form method="post" enctype="multipart/form-data">
+<!--input type="hidden" name="pwg_token" value="{$PWG_TOKEN}"-->
 
 <fieldset class="mainConf">
 	<legend><span class="icon-cog icon-yellow"></span>{'Basic configuration'|translate}</legend>

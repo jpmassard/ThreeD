@@ -58,8 +58,8 @@ class ThreeD_maintain extends PluginMaintain
 			// conf_update_param well serialize and escape array before database insertion
 			// the third parameter indicates to update $conf['threed'] global variable as well
 			conf_update_param('threed', $this->default_conf, true);
-			// Add columns is3D and isPano. Ensure all existing pictures have is3D false
-			$query = 'ALTER TABLE ' .IMAGES_TABLE. ' ADD is3D TINYINT NOT NULL DEFAULT 0, ADD isPano TINYINT NOT NULL DEFAULT 0;';
+			// Add columns is3D and pano_type. Ensure all existing pictures have is3D false
+			$query = 'ALTER TABLE ' .IMAGES_TABLE. ' ADD is3D TINYINT NOT NULL DEFAULT 0, ADD pano_type ENUM(\'none\',\'krpano\',\'pannellum\',\'3dvista\') NOT NULL DEFAULT \'none\';';
 			pwg_query($query);
 			// If plugin have been uninstalled, search JPS and MPO files and mark them 3D
 			$query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=1 WHERE path LIKE \'%.jps\' OR path LIKE \'%.mpo\'';
@@ -86,7 +86,7 @@ class ThreeD_maintain extends PluginMaintain
 	function uninstall()
 	{
 		conf_delete_param('threed');
-		$query = 'ALTER TABLE ' .IMAGES_TABLE. ' DROP COLUMN is3D, DROP COLUMN isPano;';
+		$query = 'ALTER TABLE ' .IMAGES_TABLE. ' DROP COLUMN is3D, DROP COLUMN pano_type;';
 		pwg_query($query);
 		$this->deactivate();
 	}

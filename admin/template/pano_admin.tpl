@@ -2,7 +2,7 @@
 
 {footer_script}
 (function(){
-    {if $isPano}
+    {if $pano_type != 'none'}
         $("#unzipPano").hide();
         $("#deleteZip").hide();
     {else}
@@ -21,6 +21,7 @@
 <div class="ThreeD_pano_options">
 
 <form method="post" enctype="multipart/form-data">
+<!--input type="hidden" name="pwg_token" value="{$PWG_TOKEN}"-->
 
 <fieldset class="framework">
     <legend><span class="icon-cog icon-yellow"></span>{'Framework to use'|translate}</legend>
@@ -31,11 +32,16 @@
             <input type="radio" name="framework" value="krpano" checked>{'KRpano'}
         </label>
     </li>
-
     <li>
         <label class="font-checkbox">
             <span class="icon-dot-circled"></span>
             <input type="radio" name="framework" value="pannellum" >{'Pannellum'}
+        </label>
+    </li>
+    <li>
+        <label class="font-checkbox">
+            <span class="icon-dot-circled"></span>
+            <input type="radio" name="framework" value="3dvista" >{'3dVista'}
         </label>
     </li>
     </ul>

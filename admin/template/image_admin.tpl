@@ -23,6 +23,7 @@
 <div class="ThreeD_picture_options">
 
 <form method="post" enctype="multipart/form-data">
+<!--input type="hidden" name="pwg_token" value="{$PWG_TOKEN}"-->
 
 <fieldset class="mainConf">
 	<ul>

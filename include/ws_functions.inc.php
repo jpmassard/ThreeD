@@ -46,7 +46,7 @@ function ws_ThreeD_version($params, &$service)
 
 function ws_ThreeD_image_info($params, &$service)
 {
-    $query = 'SELECT id, name, width, height, representative_ext, path, is3D , isPano FROM '.IMAGES_TABLE.' WHERE id=' . $params['image_id'];
+    $query = 'SELECT id, name, width, height, representative_ext, path, is3D , pano_type FROM '.IMAGES_TABLE.' WHERE id=' . $params['image_id'];
     $result = pwg_query($query);
     if (pwg_db_num_rows($result) == 0)
     {

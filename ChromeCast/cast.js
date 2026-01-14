@@ -140,7 +140,7 @@ class CastPlayer {
 			// update customData so the receiver can know about 3D or pano media
 			var info3D = {
 				'is3D' : data.result.is3D,
-				'ispano' : data.result.isPano,
+				'pano_type' : data.result.pano_type,
 			};
 			mediaInfo.customData = info3D;
 			

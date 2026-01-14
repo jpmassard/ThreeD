@@ -48,9 +48,9 @@ function is_3D_material($id)
 
 function is_pano($id)
 {
-    $query = 'SELECT isPano FROM '.IMAGES_TABLE. ' WHERE id='.$id;
+    $query = 'SELECT pano_type FROM '.IMAGES_TABLE. ' WHERE id='.$id;
     $element_info = pwg_db_fetch_assoc(pwg_query($query));
-    return $element_info ['isPano'] != 0;
+    return $element_info ['pano_type'] != 'none';
 }
 
 function set_3D_material($id, $val)
@@ -61,7 +61,7 @@ function set_3D_material($id, $val)
 
 function set_pano($id, $val)
 {
-    $query = 'UPDATE '.IMAGES_TABLE. ' SET isPano=' . $val . ' WHERE id='.$id;
+    $query = 'UPDATE '.IMAGES_TABLE. ' SET pano_type=' . $val . ' WHERE id='.$id;
     pwg_query($query);
 }
 

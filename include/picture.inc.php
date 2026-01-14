@@ -42,7 +42,7 @@ function threed_render_image($content, $image)
     
     $template->assign( 
         array(
-            'PHPWG_ROOT_PATH' => PHPWG_ROOT_PATH, 
+            'PHPWG_ROOT_PATH' => PHPWG_ROOT_PATH,
             'THREED_PATH'     => THREED_PATH,
             'THREED_CONF'     => $conf['threed'],
             'SRC_IMG'         => $element,
@@ -76,7 +76,7 @@ function threed_render_panorama($content, $image)
             'SRC_XML'         => get_filename_wo_extension($element).'.xml',
             'REPRESENT'       => get_absolute_root_url().substr ($image['src_image']->rel_path, 2),
             'URL'             => get_absolute_root_url().$image['url'],
-            'FRAMEWORK'       => $image['isPano'],
+            'FRAMEWORK'       => $image['pano_type'],
             'DESCRIPTION'     => $image['comment'],
             'AUTHOR'          => $image['author'],
             'TITLE'           => $image['TITLE'],
@@ -96,7 +96,7 @@ function threed_prepare_picture($picture)
         add_event_handler('render_element_content', 'threed_render_image', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
         add_event_handler('get_element_metadata_available', 'threed_metadata_available');
     }
-    if ($picture['current']['isPano'] != 0) {
+    if ($picture['current']['pano_type'] != 'none') {
         add_event_handler('render_element_content', 'threed_render_panorama', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
     }
     

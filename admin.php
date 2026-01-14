@@ -59,11 +59,11 @@ elseif (isset($_POST['save_settings']))
 
     if(isset($_POST['3Dmaterial']) and $_POST['3Dmaterial'] == 'on')
     {
-        set_3D_material($image_id, 1);
+        set_3D_material($image_id, true);
     }
     else
     {
-        set_3D_material($image_id, 0);
+        set_3D_material($image_id, false);
     }
     if(isset($_POST['unzipArchive']) and $_POST['unzipArchive'] == 'on')
     {
@@ -78,17 +78,20 @@ elseif (isset($_POST['save_settings']))
                 {
                     @unlink ($file_path);
                 }
-                if ($_POST['framework'] == 'krpano')
+                $framework = $_POST['framework'];
+                switch ($framework)
                 {
-                    $framework = 1;
-                    prepare_krpano($file_path);
+                    case 'krpano':
+                        prepare_krpano($file_path);
+                        break;
+                    case 'pannellum':
+                        prepare_pannellum($file_path);
+                        break;
+                    case '3dvista':
+                        prepare_3dvista($file_path);
+                        break;
                 }
-                else
-                {
-                    $framework = 2;
-                    prepare_pannellum($file_path);
-                }
-                $query = 'UPDATE '.IMAGES_TABLE. ' SET isPano=' .$framework. ', representative_ext=\'jpg\' WHERE id='.$image_id;
+                $query = 'UPDATE '.IMAGES_TABLE. ' SET pano_type=\'' .$framework. '\', representative_ext=\'jpg\' WHERE id='.$image_id;
                 pwg_query($query);
             }
             else
@@ -176,13 +179,13 @@ else
     $file_path = $img_infos['path'];
     $ext = get_extension($file_path);
 
-    if($ext == 'zip' or $img_infos['isPano'])
+    if($ext == 'zip' or $img_infos['pano_type'])
     {
         $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/pano_admin.tpl');
         
         $template->assign(array(
             'ADMIN_PAGE_TITLE' => l10n('Edit Panorama') . ' <span class="image-id">#'.$image_id.'</span>',
-            'isPano' => $img_infos['isPano'],
+            'pano_type' => $img_infos['pano_type'],
             'image_id' => (int)$image_id,
             'threed' => $conf['threed'],
             'theme' => $themeconf,
@@ -254,6 +257,11 @@ function prepare_krpano ($file_path)
 
 
 function prepare_pannellum($file_path)
+{
+    
+}
+
+function prepare_3dvista($file_path)
 {
     
 }
