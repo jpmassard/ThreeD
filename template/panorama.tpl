@@ -1,5 +1,20 @@
-{footer_script src=""}
+{footer_script}
+{if $FRAMEWORK == 1}
 	embedpano({ldelim}xml:"{$SRC_XML}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:"false"{rdelim});
+{else}
+pannellum.viewer('pano', {
+	"type": "multires",
+	"multiRes": {
+		"basePath": "/images/multires/library",
+		"path": "/%l/%s%y_%x",
+		"fallbackPath": "/fallback/%s",
+		"extension": "jpg",
+		"tileResolution": 512,
+		"maxLevel": 6,
+		"cubeResolution": 8432
+	}
+});
+{/if}
 {/footer_script}
 
 {html_style}
@@ -32,10 +47,17 @@
 {/if}
 
 {/if}
+
+{if $FRAMEWORK == 2}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+{/if}
 {/html_head}
 
 <div id="pano" style="width:100%;height:768px;">
 	<noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
+{if $FRAMEWORK == 1}
 	<script src="{$THREED_PATH|cat:'krpano/krpano.js'}" ></script>
-</div>
-	
+{else}
+	<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+{/if}
+</div>	

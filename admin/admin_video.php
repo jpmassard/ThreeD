@@ -1,22 +1,8 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
 // | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
-// +-----------------------------------------------------------------------+
-// | This program is free software; you can redistribute it and/or modify  |
-// | it under the terms of the GNU General Public License as published by  |
-// | the Free Software Foundation                                          |
-// |                                                                       |
-// | This program is distributed in the hope that it will be useful, but   |
-// | WITHOUT ANY WARRANTY; without even the implied warranty of            |
-// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU      |
-// | General Public License for more details.                              |
-// |                                                                       |
-// | You should have received a copy of the GNU General Public License     |
-// | along with this program; if not, write to the Free Software           |
-// | Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, |
-// | USA.                                                                  |
 // +-----------------------------------------------------------------------+
 
 defined('THREED_PATH') or die('Hacking attempt!');
@@ -38,15 +24,20 @@ $representative_file_path = dirname($file_path).'/pwg_representative/';
 $representative_file_path.= get_filename_wo_extension(basename($file_path)).'.jpg';
 $uploader_errors = array();
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit']))
+{
     $file = array();
     
-	if($_FILES['file']['error'] == UPLOAD_ERR_OK) {
+    if($_FILES['file']['error'] == UPLOAD_ERR_OK)
+    {
         $error= threed_video_upload_thumbnail($_FILES['file'], $representative_file_path);
         if ($repExt == 'jpg')
+        {
            delete_element_derivatives(array('path' => $file_path,
                                             'representative_ext' => 'jpg',));
-        else {
+        }
+        else
+        {
             list($width, $height) = getimagesize($file_path);
             $update = array(
                 'width' => $width,
@@ -56,21 +47,28 @@ if (isset($_POST['submit'])) {
             single_update(IMAGES_TABLE, $update, array('id' => $_GET['image_id']));
         }    
 
-		if ($error != null)
-			$uploader_errors['file']['upload'] = $error;
-	} else if($_FILES['file']['error'] == UPLOAD_ERR_INI_SIZE) {
-		$uploader_errors['file']['file_too_large'] = l10n('File exceeds the upload_max_filesize directive in php.ini');
-	} else {
-		$uploader_errors['file']['no_file'] = l10n('Specify a file to upload');
-	}
+        if ($error != null)
+            $uploader_errors['file']['upload'] = $error;
+    }
+    else if($_FILES['file']['error'] == UPLOAD_ERR_INI_SIZE)
+    {
+        $uploader_errors['file']['file_too_large'] = l10n('File exceeds the upload_max_filesize directive in php.ini');
+    } 
+    else
+    {
+        $uploader_errors['file']['no_file'] = l10n('Specify a file to upload');
+    }
     
-	if (count($uploader_errors) == 0) {
-		array_push($page['infos'], l10n('File uploaded succesfully'));
-	} else {
-		array_push($page['errors'], l10n('There have been errors. See below'));
-		$template->assign('threed_uploader_errors', $threed_uploader_errors);
-		$template->assign('file_uploader', $_POST['file_uploader']);
-	}
+    if (count($uploader_errors) == 0)
+    {
+        array_push($page['infos'], l10n('File uploaded succesfully'));
+    }
+    else
+    {
+        array_push($page['errors'], l10n('There have been errors. See below'));
+        $template->assign('threed_uploader_errors', $threed_uploader_errors);
+        $template->assign('file_uploader', $_POST['file_uploader']);
+    }
 }
     
 $template->assign('name', $name);
@@ -82,12 +80,12 @@ function threed_video_upload_thumbnail($thumbnail, $representative_file_path)
 {
     if ($thumbnail['type'] != 'image/jpeg')
         return l10n('bad file type');
-	// Move temporary file to destination directory
-	if (!move_uploaded_file($thumbnail['tmp_name'], $representative_file_path))
-		return l10n('Can\'t upload file to galleries directory');
+    // Move temporary file to destination directory
+    if (!move_uploaded_file($thumbnail['tmp_name'], $representative_file_path))
+        return l10n('Can\'t upload file to galleries directory');
 
     threed_thumbnail_video_watermark ($representative_file_path);    
-	return null;
+    return null;
 }
 
 ?>

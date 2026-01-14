@@ -231,23 +231,12 @@ SELECT
     $filename_wo_ext = $date_string.'-'.$random_string;
     $file_path = $upload_dir.'/'.$filename_wo_ext.'.';
 
-    list($width, $height, $type) = getimagesize($source_filepath);
-    
-	if (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
-    {
-      $original_extension = strtolower(get_extension($original_filename));
+	list($width, $height, $type) = getimagesize($source_filepath);
 
-      if (in_array($original_extension, $conf['file_ext']))
-      {
-        $file_path.= $original_extension;
-      }
-      else
-      {
-        unlink($source_filepath);
-        die('unexpected file type');
-      }
-    }
-    elseif (IMAGETYPE_PNG == $type)
+	// adjust file type for wrongly detected extensions (jps stereo image format is detected as jpg...)
+	$type = trigger_change('update_type', $type, $original_filename);
+
+    if (IMAGETYPE_PNG == $type)
     {
       $file_path.= 'png';
     }
@@ -262,6 +251,20 @@ SELECT
     elseif (IMAGETYPE_WEBP == $type)
     {
       $file_path.= 'webp';
+    }
+    elseif (isset($conf['upload_form_all_types']) and $conf['upload_form_all_types'])
+    {
+      $original_extension = strtolower(get_extension($original_filename));
+
+      if (in_array($original_extension, $conf['file_ext']))
+      {
+        $file_path.= $original_extension;
+      }
+      else
+      {
+        unlink($source_filepath);
+        die('unexpected file type');
+      }
     }
     else
     {

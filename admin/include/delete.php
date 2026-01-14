@@ -6,14 +6,17 @@
 // +-----------------------------------------------------------------------+
 
 // Create initial video representative picture
-function threed_delete ($ids) {
-	foreach($ids as $id) {
-		if (is_pano($id)) {
-			$infos = get_image_infos($id);
-			$path = $infos['path'];
-			deltree(dirname($path).'/panos');
-			unlink(str_replace('zip', 'xml', $path));
-		}
-	}
+function threed_delete ($ids)
+{
+    foreach($ids as $id)
+    {
+        if (is_pano($id))
+        {
+            $infos = get_image_infos($id);
+            $path = $infos['path'];
+            deltree(dirname($path).'/panos');
+            unlink(str_replace('zip', 'xml', $path));
+        }
+    }
 }
 
