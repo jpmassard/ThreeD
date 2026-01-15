@@ -20,7 +20,7 @@ add_event_handler('loc_end_add_uploaded_file', function ($image_infos)
     $ext = get_extension($image_infos ['path']);
     if(in_array($ext, $threed_image_exts))
     {
-        $query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=\'1\' WHERE id=' .$image_infos ['id']. ';';
+        $query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=\'true\' WHERE id=' .$image_infos ['id']. ';';
         pwg_query($query);
     }
 });

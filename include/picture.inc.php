@@ -89,14 +89,16 @@ function threed_render_panorama($content, $image)
 // some stuff at the begining of picture.php
 function threed_prepare_picture($picture)
 {
-    if ($picture['current']['is3D'] == 1) {
+    if ($picture['current']['is3D'] == 'true')
+    {
         // remove default parser
         remove_event_handler('render_element_content', 'default_picture_content', EVENT_HANDLER_PRIORITY_NEUTRAL);
         // add custom parser
         add_event_handler('render_element_content', 'threed_render_image', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
         add_event_handler('get_element_metadata_available', 'threed_metadata_available');
     }
-    if ($picture['current']['pano_type'] != 'none') {
+    if ($picture['current']['pano_type'] != 'none')
+    {
         add_event_handler('render_element_content', 'threed_render_panorama', EVENT_HANDLER_PRIORITY_NEUTRAL-10, 2);
     }
     

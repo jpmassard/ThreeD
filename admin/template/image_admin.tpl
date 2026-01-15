@@ -30,7 +30,7 @@
 	<li>
 		<label class="font-checkbox">
 			<span class="icon-check"></span>
-			<input type="checkbox" name="3Dmaterial" {if $is3D}checked{/if}>{'Set if this picture or video is stereoscopic'|translate}
+			<input type="checkbox" name="3Dmaterial" {if $is3D == 'true'}checked{/if}>{'Set if this picture or video is stereoscopic'|translate}
 		</label>
 	</li>
 

@@ -1,4 +1,4 @@
-<?php
+15/01/2026 15:14:30<?php
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
@@ -13,7 +13,14 @@ check_status(ACCESS_ADMINISTRATOR);
 
 global $template, $page, $conf, $admin_photo_base_url;
 
-$page['tab'] = (isset($_GET['tab'])) ? $_GET['tab'] : 'config';
+if(isset($_GET['tab'])) {
+    check_input_parameter('tab', $_GET, false, PATTERN_ID);
+    $page['tab'] = $_GET['tab'];
+}
+else
+{
+    $page['tab'] = 'config';
+}
 
 $errors = array();
 
@@ -24,22 +31,22 @@ if (isset($_POST['save_config']))
         'openGraph'      => isset($_POST['opnGraphAllowed']) ? true : false,
         'video_autoplay' => isset($_POST['video_autoplay']) ? true : false,
         'video_autoloop' => isset($_POST['video_autoloop']) ? true : false,
-        'icon2Dphoto'    => isset($_POST['photo2d']) ? true : false,
-        'icon2Dvideo'    => isset($_POST['video2d']) ? true : false,
-        'icon3Dphoto'    => isset($_POST['photo3d']) ? true : false,
-        'icon3Dvideo'    => isset($_POST['video3d']) ? true : false,
-        'icon360Pano'    => isset($_POST['pano360']) ? true : false,
-        'iconposition'   => $_POST['iconposition'],
-        'iconxpos'       => $_POST['iconposition']=='custom' ? $_POST['iconxpos'] : 50,
-        'iconypos'       => $_POST['iconposition']=='custom' ? $_POST['iconypos'] : 50,
-        'iconalpha'      => $_POST['iconalpha'],
+        'icon_2Dphoto'    => isset($_POST['photo2d']) ? true : false,
+        'icon_2Dvideo'    => isset($_POST['video2d']) ? true : false,
+        'icon_3Dphoto'    => isset($_POST['photo3d']) ? true : false,
+        'icon_3Dvideo'    => isset($_POST['video3d']) ? true : false,
+        'icon_360Pano'    => isset($_POST['pano360']) ? true : false,
+        'icon_position'   => $_POST['icon_position'],
+        'icon_xpos'       => $_POST['icon_position']=='custom' ? $_POST['icon_xpos'] : 50,
+        'icon_ypos'       => $_POST['icon_position']=='custom' ? $_POST['icon_ypos'] : 50,
+        'icon_alpha'      => $_POST['icon_alpha'],
     );
 
     // make some test on critiical values
     $oor = l10n(' must be in the range [0..100]');
-    if($configThreed['iconxpos'] < 0 or $configThreed['iconxpos'] > 100 ) $errors['xpos'] = 'x pos'. $oor;
-    if($configThreed['iconypos'] < 0 or $configThreed['iconypos'] > 100 ) $errors['ypos'] = 'y pos'. $oor;
-    if($configThreed['iconalpha'] < 0 or $configThreed['iconalpha'] > 100 ) $errors['opacity'] = 'opacity'. $oor;
+    if($configThreed['icon_xpos'] < 0 or $configThreed['icon_xpos'] > 100 ) $errors['xpos'] = 'x pos'. $oor;
+    if($configThreed['icon_ypos'] < 0 or $configThreed['icon_ypos'] > 100 ) $errors['ypos'] = 'y pos'. $oor;
+    if($configThreed['icon_alpha'] < 0 or $configThreed['icon_alpha'] > 100 ) $errors['opacity'] = 'opacity'. $oor;
 
   if(count($errors) == 0)
   {
@@ -59,11 +66,11 @@ elseif (isset($_POST['save_settings']))
 
     if(isset($_POST['3Dmaterial']) and $_POST['3Dmaterial'] == 'on')
     {
-        set_3D_material($image_id, true);
+        set_3D_material($image_id, 'TRUE');
     }
     else
     {
-        set_3D_material($image_id, false);
+        set_3D_material($image_id, 'FALSE');
     }
     if(isset($_POST['unzipArchive']) and $_POST['unzipArchive'] == 'on')
     {
@@ -163,8 +170,7 @@ if('config' == $page['tab'])
 }
 else
 {
-    check_input_parameter('tab', $_GET, false, PATTERN_ID);
-    $image_id = $_GET['tab'];
+    $image_id = $page['tab'];
     if($image_id == '')
     {
         return; // needed when two clicks on tabsheet... TODO
@@ -179,7 +185,7 @@ else
     $file_path = $img_infos['path'];
     $ext = get_extension($file_path);
 
-    if($ext == 'zip' or $img_infos['pano_type'])
+    if($ext == 'zip' or $img_infos['pano_type'] != 'none')
     {
         $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/pano_admin.tpl');
         

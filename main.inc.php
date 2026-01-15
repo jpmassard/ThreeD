@@ -43,7 +43,7 @@ function is_3D_material($id)
 {
     $query = 'SELECT is3D FROM '.IMAGES_TABLE. ' WHERE id='.$id;
     $element_info = pwg_db_fetch_assoc(pwg_query($query));
-    return $element_info ['is3D'] != 0;
+    return $element_info ['is3D'] == 'true';
 }
 
 function is_pano($id)

@@ -54,7 +54,7 @@ add_event_handler('loc_begin_index', function () {
                     {
                         $img = get_absolute_root_url().get_element_url($element);
                     }
-                    else
+                    else if($element['representative_ext'] != null)
                     {
                         $img = get_absolute_root_url().substr (original_to_representative( get_element_url($element), $element['representative_ext'] ),4);
                     }
