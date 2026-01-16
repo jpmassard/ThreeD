@@ -9,7 +9,7 @@ defined('THREED_PATH') or die('Hacking attempt!');
 
 function threed_add_icons ($pictures)
 {
-  global $template, $conf, $threed_image_exts, $threed_video_exts;
+    global $template, $conf, $threed_image_exts, $threed_video_exts;
 
     for ($i=0; $i < count($pictures); $i++) 
     {
@@ -24,7 +24,7 @@ function threed_add_icons ($pictures)
         if($conf['threed']['icon_3Dphoto'] and $is3D and $is_photo) $show_icons[$i][] = 'icon_3D';
         if($conf['threed']['icon_360Pano'] and $pictures[$i]['pano_type'] != 'none') $show_icons[$i][] = 'icon_360';
     }
-    
+
     switch($conf['threed']['icon_position'])
     {
         case 'topleft': $x = 0; $y = 0; break;

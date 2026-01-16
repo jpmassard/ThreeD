@@ -41,27 +41,27 @@ define('THREED_ADMIN',   get_root_url() . 'admin.php?page=plugin-' . THREED_ID);
 // 
 function is_3D_material($id)
 {
-    $query = 'SELECT is3D FROM '.IMAGES_TABLE. ' WHERE id='.$id;
+    $query = 'SELECT is3D FROM '.IMAGES_TABLE. ' WHERE id=\''.$id. '\';';
     $element_info = pwg_db_fetch_assoc(pwg_query($query));
     return $element_info ['is3D'] == 'true';
 }
 
 function is_pano($id)
 {
-    $query = 'SELECT pano_type FROM '.IMAGES_TABLE. ' WHERE id='.$id;
+    $query = 'SELECT pano_type FROM '.IMAGES_TABLE. ' WHERE id=\''.$id. '\';';
     $element_info = pwg_db_fetch_assoc(pwg_query($query));
     return $element_info ['pano_type'] != 'none';
 }
 
 function set_3D_material($id, $val)
 {
-    $query = 'UPDATE '.IMAGES_TABLE. ' SET is3D=' . $val . ' WHERE id='.$id;
+    $query = 'UPDATE '.IMAGES_TABLE. ' SET is3D=\'' . $val . '\' WHERE id=\''.$id. '\';';
     pwg_query($query);
 }
 
 function set_pano($id, $val)
 {
-    $query = 'UPDATE '.IMAGES_TABLE. ' SET pano_type=' . $val . ' WHERE id='.$id;
+    $query = 'UPDATE '.IMAGES_TABLE. ' SET pano_type=\'' . $val . '\' WHERE id=\''.$id. '\';';
     pwg_query($query);
 }
 
@@ -90,7 +90,10 @@ add_event_handler('init', function() {
 if (defined('IN_ADMIN'))
 {
     // Add a ThreeD photo edit tab in photo edit
-    add_event_handler('tabsheet_before_select', function($sheets, $id) {
+    add_event_handler('tabsheet_before_select', 'threed_add_tabsheet');
+
+    function threed_add_tabsheet($sheets, $id)
+    {
         if ($id == 'photo')
         {
             $image_id = isset($_GET['image_id']) ? $_GET['image_id'] : '';
@@ -99,7 +102,7 @@ if (defined('IN_ADMIN'))
                 'url' => THREED_ADMIN . '-' . $image_id);
         }
         return $sheets;
-    });
+    }
 }
 else
 {
@@ -115,19 +118,18 @@ else
 }
 
 // add web service API handler
-add_event_handler('ws_add_methods', 'ThreeD_ws_add_methods',
+add_event_handler('ws_add_methods', 'threed_ws_add_methods',
     EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'include/ws_functions.inc.php');
 
 // add mpo and jps handler
-add_event_handler ('upload_file', 'upload_threed_picture',
+add_event_handler ('upload_file', 'threed_upload_picture',
     EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_picture.inc.php');
 
 // Add to update jps image type
-add_event_handler('update_type', 'threed_update_type', 
-    EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_picture.inc.php');
+add_event_handler('update_type', 'threed_update_type'); 
 
 // Add mp4 and webm stereo handler
-add_event_handler ('upload_file', 'upload_threed_video',
+add_event_handler ('upload_file', 'threed_upload_video',
     EVENT_HANDLER_PRIORITY_NEUTRAL, THREED_PATH . 'admin/include/upload_video.inc.php');
 
 // Add handler to show media type on thumbnails

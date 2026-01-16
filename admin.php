@@ -1,4 +1,4 @@
-15/01/2026 15:14:30<?php
+<?php
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
@@ -13,7 +13,8 @@ check_status(ACCESS_ADMINISTRATOR);
 
 global $template, $page, $conf, $admin_photo_base_url;
 
-if(isset($_GET['tab'])) {
+if(isset($_GET['tab']))
+{
     check_input_parameter('tab', $_GET, false, PATTERN_ID);
     $page['tab'] = $_GET['tab'];
 }
@@ -58,6 +59,8 @@ if (isset($_POST['save_config']))
 
 elseif (isset($_POST['save_settings']))
 {
+    check_pwg_token();
+
     include_once(PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
 
     $image_id = $page['tab'];
@@ -66,11 +69,19 @@ elseif (isset($_POST['save_settings']))
 
     if(isset($_POST['3Dmaterial']) and $_POST['3Dmaterial'] == 'on')
     {
-        set_3D_material($image_id, 'TRUE');
+        set_3D_material($image_id, 'true');
     }
     else
     {
-        set_3D_material($image_id, 'FALSE');
+        set_3D_material($image_id, 'false');
+    }
+    if(isset($_POST['img_type']) and $_POST['img_type'] == 'pano')
+    {
+        set_pano($image_id, 'pannellum');
+    }
+    else
+    {
+        set_pano($image_id, 'none');
     }
     if(isset($_POST['unzipArchive']) and $_POST['unzipArchive'] == 'on')
     {
@@ -188,27 +199,27 @@ else
     if($ext == 'zip' or $img_infos['pano_type'] != 'none')
     {
         $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/pano_admin.tpl');
-        
-        $template->assign(array(
-            'ADMIN_PAGE_TITLE' => l10n('Edit Panorama') . ' <span class="image-id">#'.$image_id.'</span>',
-            'pano_type' => $img_infos['pano_type'],
-            'image_id' => (int)$image_id,
-            'threed' => $conf['threed'],
-            'theme' => $themeconf,
-        ));
+    	$page_title = l10n('Edit Panorama');
     }
-    else
+    elseif($ext == 'jpg') // jpg cant be either pano or stereoscopic
+    {
+        $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/image_jpg_admin.tpl');
+        $page_title = l10n('Edit photo');
+    }
+    else 
     {
         $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/image_admin.tpl');
-        
-        $template->assign(array(
-            'ADMIN_PAGE_TITLE' => l10n('Edit photo') .' <span class="image-id">#'.$image_id.'</span>',
-            'is3D' => $img_infos['is3D'],
-            'image_id' => (int)$image_id,
-            'threed' => $conf['threed'],
-            'theme' => $themeconf,
-        ));
+        $page_title = l10n('Edit photo');
     }
+    $template->assign(array(
+        'ADMIN_PAGE_TITLE' => $page_title .' <span class="image-id">#'.$image_id.'</span>',
+        'PWG_TOKEN'=> get_pwg_token(),
+        'is3D' => $img_infos['is3D'],
+        'pano_type' => $img_infos['pano_type'],
+        'image_id' => (int)$image_id,
+        'threed' => $conf['threed'],
+        'theme' => $themeconf,
+    ));
 }
 
 if(count($errors) != 0)

@@ -14,7 +14,9 @@ require_once THREED_PATH . '/pelAutoload.php';
 define ('THUMBNAIL_DIM', 480);
 
 // Add the flag is3D to database
-add_event_handler('loc_end_add_uploaded_file', function ($image_infos)
+add_event_handler('loc_end_add_uploaded_file', threed_set_flags);
+
+function threed_set_flags($image_infos)
 {
     global $threed_image_exts;
     $ext = get_extension($image_infos ['path']);
@@ -23,10 +25,10 @@ add_event_handler('loc_end_add_uploaded_file', function ($image_infos)
         $query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=\'true\' WHERE id=' .$image_infos ['id']. ';';
         pwg_query($query);
     }
-});
+}
 
 // Create initial representative picture
-function upload_threed_picture ($representative_ext, $file_path)
+function threed_upload_picture ($representative_ext, $file_path)
 {
     // exit immediately if extension does not correspond
     // so an other picture driver can do the job

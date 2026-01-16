@@ -27,7 +27,10 @@ add_event_handler('loc_begin_page_tail', function () {
     }
 });
 
-add_event_handler('blockmanager_apply', function ($menu_ref) {
+add_event_handler('blockmanager_apply', 'threed_add_cast_icon');
+
+function threed_add_cast_icon($menu_ref)
+{
     global $conf, $user, $page, $template;
 
     if ($conf['threed']['chromeCast'] == 1 and isset($page['category']))
@@ -41,7 +44,7 @@ add_event_handler('blockmanager_apply', function ($menu_ref) {
         $button = $template->parse('cast_button', true);
         $template->add_index_button($button);
     }
-});
+}
 
 /*
 add_event_handler('loc_end_picture', function ()

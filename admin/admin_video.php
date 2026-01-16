@@ -2,16 +2,19 @@
 // +-----------------------------------------------------------------------+
 // | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2014-2025 Jean-Paul MASSARD         https://jpmassard.fr |
+// | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 
 defined('THREED_PATH') or die('Hacking attempt!');
+
 // Check access and exit if user has no admin rights
 check_status(ACCESS_ADMINISTRATOR);
 
 include_once ('include/upload_video.inc.php');
 
 global $template;
+
+check_input_parameter('image_id', $_GET, false, PATTERN_ID);
 
 $query = 'SELECT path, name, representative_ext FROM '.IMAGES_TABLE.' WHERE id = '.$_GET['image_id'].';';
 $result = pwg_query($query);

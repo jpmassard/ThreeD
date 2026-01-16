@@ -21,7 +21,7 @@
 <div class="ThreeD_pano_options">
 
 <form method="post" enctype="multipart/form-data">
-<!--input type="hidden" name="pwg_token" value="{$PWG_TOKEN}"-->
+<input type="hidden" name="pwg_token" value="{$PWG_TOKEN}">
 
 <fieldset class="framework">
     <legend><span class="icon-cog icon-yellow"></span>{'Framework to use'|translate}</legend>

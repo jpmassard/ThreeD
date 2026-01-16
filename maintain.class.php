@@ -40,7 +40,7 @@ class ThreeD_maintain extends PluginMaintain
 		'icon_position' => 'center',
 		'icon_xpos' => 0,
 		'icon_ypos' => 0,
-		'icon_alpha' => 0.7,
+		'icon_alpha' => 80,
 		);
 	
 	function __construct($plugin_id)
@@ -59,10 +59,10 @@ class ThreeD_maintain extends PluginMaintain
 			// the third parameter indicates to update $conf['threed'] global variable as well
 			conf_update_param('threed', $this->default_conf, true);
 			// Add columns is3D and pano_type. Ensure all existing pictures have is3D false
-			$query = 'ALTER TABLE ' .IMAGES_TABLE. ' ADD is3D ENUM('true','false') NOT NULL DEFAULT 0, ADD pano_type ENUM(\'none\',\'krpano\',\'pannellum\',\'3dvista\') NOT NULL DEFAULT \'none\';';
+			$query = 'ALTER TABLE ' .IMAGES_TABLE. ' ADD is3D ENUM(\'true\',\'false\') NOT NULL DEFAULT \'false\', ADD pano_type ENUM(\'none\',\'krpano\',\'pannellum\',\'3dvista\') NOT NULL DEFAULT \'none\';';
 			pwg_query($query);
 			// If plugin have been uninstalled, search JPS and MPO files and mark them 3D
-			$query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D='true' WHERE path LIKE \'%.jps\' OR path LIKE \'%.mpo\'';
+			$query = 'UPDATE ' .IMAGES_TABLE. ' SET is3D=\'true\' WHERE path LIKE \'%.jps\' OR path LIKE \'%.mpo\'';
 			pwg_query($query);
 		}
 		$this->installed = true;

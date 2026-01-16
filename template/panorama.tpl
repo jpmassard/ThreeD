@@ -1,23 +1,3 @@
-{footer_script}
-{if  $FRAMEWORK == 'krpano'}
-	embedpano({ldelim}xml:"{$SRC_XML}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:"false"{rdelim});
-{elseif $FRAMEWORK == 'pannellum'}
-pannellum.viewer('pano', {
-	"type": "multires",
-	"multiRes": {
-		"basePath": "/images/multires/library",
-		"path": "/%l/%s%y_%x",
-		"fallbackPath": "/fallback/%s",
-		"extension": "jpg",
-		"tileResolution": 512,
-		"maxLevel": 6,
-		"cubeResolution": 8432
-	}
-});
-{elseif $FRAMEWORK == '3dvista'}
-{/if}
-{/footer_script}
-
 {html_style}
 #theImage {
 	margin : 0px auto;
@@ -62,4 +42,28 @@ pannellum.viewer('pano', {
 	<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 {elseif $FRAMEWORK == '3dvista'}
 {/if}
-</div>	
+</div>
+
+{footer_script}
+{if  $FRAMEWORK == 'krpano'}
+	embedpano({ldelim}xml:"{$SRC_XML}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:"false"{rdelim});
+{elseif $FRAMEWORK == 'pannellum'}
+pannellum.viewer('pano', {ldelim}
+	"type": {if $EXT == 'zip'}"multires",
+	"multiRes": {ldelim}
+		"basePath": "/images/multires/library",
+		"path": "/%l/%s%y_%x",
+		"fallbackPath": "/fallback/%s",
+		"extension": "jpg",
+		"tileResolution": 512,
+		"maxLevel": 6,
+		"cubeResolution": 8432
+	{rdelim}
+	{else} "equirectangular",
+    "panorama": "{$URL}"
+	{/if}
+{rdelim});
+{elseif $FRAMEWORK == '3dvista'}
+{/if}
+{/footer_script}
+

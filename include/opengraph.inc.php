@@ -1,6 +1,6 @@
 <?php
 // +-----------------------------------------------------------------------+
-// | ThreeD - a 3D photo and video extension for Piwigo                    |
+// | ThreeD - a 3D photo, video and 360 panorama extension for Piwigo      |
 // | Add OpenGraph tags to category pages and 3D pictures                  |
 // +-----------------------------------------------------------------------+
 // | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
@@ -9,14 +9,16 @@
 defined('THREED_PATH') or die('Hacking attempt!');
 
 // Prepare header for Open Graph meta tags
-add_event_handler('loc_end_page_header', function () {
+add_event_handler('loc_end_page_header', 'threed_replace_header');
+
+function threed_replace_header() {
     global $conf, $template;
 
     if ($conf['threed']['openGraph'] == 1 and script_basename()=='index')
     {
         $template->set_prefilter('header', 'threed_header_replace');
     }
-});
+}
 
 function threed_header_replace($content, $smarty)
 {
@@ -25,7 +27,10 @@ function threed_header_replace($content, $smarty)
     return preg_replace('#'.$search.'#', $replacement, $content);
 }
 
-add_event_handler('loc_begin_index', function () {
+add_event_handler('loc_begin_index', 'threed_add_header_tags');
+
+function threed_add_header_tags()
+{
     global $template, $page, $conf;
 
     if ($conf['threed']['openGraph'] == 1 and script_basename()=='index')
@@ -87,4 +92,4 @@ add_event_handler('loc_begin_index', function () {
         );
         $template->append('head_elements', $template->parse('threed_header_meta', true));
     }
-});
+}

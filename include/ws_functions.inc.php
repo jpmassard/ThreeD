@@ -7,7 +7,7 @@
 
 defined('THREED_PATH') or die('Hacking attempt!');
 
-function ThreeD_ws_add_methods($arr)
+function threed_ws_add_methods($arr)
 {
     $service = &$arr[0];
     
