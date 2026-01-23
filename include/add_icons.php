@@ -7,6 +7,7 @@
 
 defined('THREED_PATH') or die('Hacking attempt!');
 
+add_event_handler ('loc_begin_index_thumbnails', 'threed_add_icons');
 function threed_add_icons ($pictures)
 {
     global $template, $conf, $threed_image_exts, $threed_video_exts;

@@ -16,18 +16,18 @@ canvas{
 <meta property="og:type" content="video.other">
 
 <meta property="og:url" content="{$URL}">
-<meta property="og:description" content="3D Stereoscopic video - {$DESCRIPTION}">
-{if $AUTHOR != null }
-<meta property="og:site_name" content="{$AUTHOR}">
+<meta property="og:description" content="3D Stereoscopic video - {$IMAGE['comment']}">
+{if $IMAGE['author'] != null }
+<meta property="og:site_name" content="{$IMAGE['author']}">
 {/if}
 
 <!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="{$TITLE}" />
-<meta name="twitter:description" content="3D Stereoscopic video - {$DESCRIPTION}" />
+<meta name="twitter:title" content="{$IMAGE['TITLE']}" />
+<meta name="twitter:description" content="3D Stereoscopic video - {$IMAGE['comment']}" />
 <meta name="twitter:image" content="{$REPRESENT}" />
-{if $AUTHOR != null }
-<meta property="twitter:site" content="{$AUTHOR}">
+{if $IMAGE['author'] != null }
+<meta property="twitter:site" content="{$IMAGE['author']}">
 {/if}
 
 {/if}

@@ -16,18 +16,18 @@ canvas{
 <meta property="og:type" content="website">
 <meta property="og:image" content="{$REPRESENT}">
 <meta property="og:url" content="{$URL}">
-<meta property="og:description" content="3D Stereoscopic image - {$DESCRIPTION}">
-{if $AUTHOR != null }
-<meta property="og:site_name" content="{$AUTHOR}">
+<meta property="og:description" content="3D Stereoscopic image - {$IMAGE['comment']}">
+{if $IMAGE['author'] != null }
+<meta property="og:site_name" content="{$IMAGE['author']}">
 {/if}
 
 <!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="{$TITLE}" />
-<meta name="twitter:description" content="3D Stereoscopic image - {$DESCRIPTION}" />
+<meta name="twitter:title" content="{$IMAGE['TITLE']}" />
+<meta name="twitter:description" content="3D Stereoscopic image - {$IMAGE['comment']}" />
 <meta name="twitter:image" content="{$REPRESENT}" />
-{if $AUTHOR != null }
-<meta property="twitter:site" content="{$AUTHOR}">
+{if $IMAGE['author'] != null }
+<meta property="twitter:site" content="{$IMAGE['author']}">
 {/if}
 
 {/if}
@@ -48,7 +48,7 @@ canvas{
   var viewer = new VWS.player.S3dImageViewerApp({if $EXTENSION == 'mpo'}'MPO'{else}'IMG'{/if}, 'stereo');
   {* /if *}
   
-	var aspectRatio= {$FILE_INFO['width']}/{$FILE_INFO['height']};
+	var aspectRatio= {$IMAGE['width']}/{$IMAGE['height']};
 	{if $EXTENSION == 'jps'} 
 	// divide by 2 for non MPO file
 	aspectRatio /= 2;

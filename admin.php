@@ -5,222 +5,54 @@
 // | Copyright(C) 2014-2026 Jean-Paul MASSARD         https://jpmassard.fr |
 // +-----------------------------------------------------------------------+
 
-if(!defined('THREED_PATH')) die('Hacking attempt!');
-
-include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
+defined('THREED_PATH') or die('Hacking attempt!');
 
 check_status(ACCESS_ADMINISTRATOR);
 
 global $template, $page, $conf, $admin_photo_base_url;
 
-if(isset($_GET['tab']))
-{
-    check_input_parameter('tab', $_GET, false, PATTERN_ID);
-    $page['tab'] = $_GET['tab'];
-}
-else
-{
-    $page['tab'] = 'config';
-}
-
 $errors = array();
 
 if (isset($_POST['save_config']))
 {
-    $configThreed = array(
-        'chromeCast'     => isset($_POST['chromecast']) ? true : false,
-        'openGraph'      => isset($_POST['opnGraphAllowed']) ? true : false,
-        'video_autoplay' => isset($_POST['video_autoplay']) ? true : false,
-        'video_autoloop' => isset($_POST['video_autoloop']) ? true : false,
-        'icon_2Dphoto'    => isset($_POST['photo2d']) ? true : false,
-        'icon_2Dvideo'    => isset($_POST['video2d']) ? true : false,
-        'icon_3Dphoto'    => isset($_POST['photo3d']) ? true : false,
-        'icon_3Dvideo'    => isset($_POST['video3d']) ? true : false,
-        'icon_360Pano'    => isset($_POST['pano360']) ? true : false,
-        'icon_position'   => $_POST['icon_position'],
-        'icon_xpos'       => $_POST['icon_position']=='custom' ? $_POST['icon_xpos'] : 50,
-        'icon_ypos'       => $_POST['icon_position']=='custom' ? $_POST['icon_ypos'] : 50,
-        'icon_alpha'      => $_POST['icon_alpha'],
-    );
+	$configThreed = array(
+		'chromeCast'     => isset($_POST['chromecast']) ? true : false,
+		'openGraph'      => isset($_POST['opnGraphAllowed']) ? true : false,
+		'video_autoplay' => isset($_POST['video_autoplay']) ? true : false,
+		'video_autoloop' => isset($_POST['video_autoloop']) ? true : false,
+		'icon_2Dphoto'    => isset($_POST['photo2d']) ? true : false,
+		'icon_2Dvideo'    => isset($_POST['video2d']) ? true : false,
+		'icon_3Dphoto'    => isset($_POST['photo3d']) ? true : false,
+		'icon_3Dvideo'    => isset($_POST['video3d']) ? true : false,
+		'icon_360Pano'    => isset($_POST['pano360']) ? true : false,
+		'icon_position'   => $_POST['icon_position'],
+		'icon_xpos'       => $_POST['icon_position']=='custom' ? $_POST['icon_xpos'] : 50,
+		'icon_ypos'       => $_POST['icon_position']=='custom' ? $_POST['icon_ypos'] : 50,
+		'icon_alpha'      => $_POST['icon_alpha'],
+	);
 
-    // make some test on critiical values
-    $oor = l10n(' must be in the range [0..100]');
-    if($configThreed['icon_xpos'] < 0 or $configThreed['icon_xpos'] > 100 ) $errors['xpos'] = 'x pos'. $oor;
-    if($configThreed['icon_ypos'] < 0 or $configThreed['icon_ypos'] > 100 ) $errors['ypos'] = 'y pos'. $oor;
-    if($configThreed['icon_alpha'] < 0 or $configThreed['icon_alpha'] > 100 ) $errors['opacity'] = 'opacity'. $oor;
+	// make some test on critiical values
+	$oor = l10n(' must be in the range [0..100]');
+	if($configThreed['icon_xpos'] < 0 or $configThreed['icon_xpos'] > 100 ) $errors['xpos'] = 'x pos'. $oor;
+	if($configThreed['icon_ypos'] < 0 or $configThreed['icon_ypos'] > 100 ) $errors['ypos'] = 'y pos'. $oor;
+	if($configThreed['icon_alpha'] < 0 or $configThreed['icon_alpha'] > 100 ) $errors['opacity'] = 'opacity'. $oor;
 
   if(count($errors) == 0)
   {
-    conf_update_param('threed', $configThreed, true);
-    $page['infos'][] = l10n('Your configuration settings are saved');
+	conf_update_param('threed', $configThreed, true);
+	$page['infos'][] = l10n('Your configuration settings are saved');
   }
   unset($_POST['save_config']);
 } 
 
-elseif (isset($_POST['save_settings']))
-{
-    check_pwg_token();
-
-    include_once(PHPWG_ROOT_PATH.'admin/include/functions_upload.inc.php');
-
-    $image_id = $page['tab'];
-    $img_infos = get_image_infos($image_id, true);
-    $file_path = $img_infos['path'];
-
-    if(isset($_POST['3Dmaterial']) and $_POST['3Dmaterial'] == 'on')
-    {
-        set_3D_material($image_id, 'true');
-    }
-    else
-    {
-        set_3D_material($image_id, 'false');
-    }
-    if(isset($_POST['img_type']) and $_POST['img_type'] == 'pano')
-    {
-        set_pano($image_id, 'pannellum');
-    }
-    else
-    {
-        set_pano($image_id, 'none');
-    }
-    if(isset($_POST['unzipArchive']) and $_POST['unzipArchive'] == 'on')
-    {
-        $zip = new ZipArchive;
-        $res = @$zip->open($file_path);
-        if ($res === TRUE)
-        {
-            if($zip->extractTo(dirname($file_path)))
-            {
-                $zip->close();
-                if (isset($_POST['delArchive']) && $_POST['delArchive'] == 'on')
-                {
-                    @unlink ($file_path);
-                }
-                $framework = $_POST['framework'];
-                switch ($framework)
-                {
-                    case 'krpano':
-                        prepare_krpano($file_path);
-                        break;
-                    case 'pannellum':
-                        prepare_pannellum($file_path);
-                        break;
-                    case '3dvista':
-                        prepare_3dvista($file_path);
-                        break;
-                }
-                $query = 'UPDATE '.IMAGES_TABLE. ' SET pano_type=\'' .$framework. '\', representative_ext=\'jpg\' WHERE id='.$image_id;
-                pwg_query($query);
-            }
-            else
-            {
-                $zip->close();
-                $errors [] = l10n('ZIP archive extraction failed');
-            }
-            $page['infos'][] = l10n('krpano archive extracted successfully');
-        }
-        else
-        {
-            $errors [] = l10n('couldn\'t open ZIP archive');
-        }
-    }
-    if(isset($_POST['uploadRepresentative']) && $_POST['uploadRepresentative'] == 'on')
-    {
-        if(isset($_FILES['rFile']) )
-        {
-             $name = $_FILES['rFile']['name'];
-             if($name != '')
-             {
-                // Create the new file in pwg_representative sub-directory
-                $representative_file_path = dirname($file_path).'/pwg_representative/' . get_filename_wo_extension(basename($file_path)).'.';
-
-                // In replace case, delete old representative file and derivatives
-                if($img_infos['representative_ext'] != null)
-                {
-                    @unlink($representative_file_path . $img_infos['representative_ext']);
-                    delete_element_derivatives($img_infos);
-                }
-                $rExt = get_extension($name);
-                $representative_file_path.= $rExt;
-
-                prepare_directory(dirname($representative_file_path));
-                move_uploaded_file($_FILES['rFile']['tmp_name'], $representative_file_path);
-
-                $query = 'UPDATE ' . IMAGES_TABLE . ' SET representative_ext=\'' . $rExt . '\' WHERE id=\'' . $image_id .'\';';
-                pwg_query($query);
-
-                // Everything is OK, tell this to admin
-                $page['infos'][] = l10n('The representative picture was updated');
-
-            }
-            else
-            {
-                $errors[] = l10n('A representative picture must be selected');
-            }
-        }
-    }
-    unset($_POST['save_settings']);
-}
-
 $themeconf = $template->get_template_vars('themeconf');
 
-$tabsheet = new tabsheet();
-
-if('config' == $page['tab'])
-{
-    $tabsheet->add('config', l10n('Configuration'), THREED_ADMIN . '-config');
-    $tabsheet->select('config');
-    $tabsheet->assign();
-    
-    // template
-    $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/config.tpl');
-    $template->assign(array(
-        'threed' => $conf['threed'],
-        'theme' => $themeconf,
-    ));
-}
-else
-{
-    $image_id = $page['tab'];
-    if($image_id == '')
-    {
-        return; // needed when two clicks on tabsheet... TODO
-    }
-    $admin_photo_base_url = get_root_url().'admin.php?page=photo-'. $image_id;
-    
-    $tabsheet->set_id('photo');
-    $tabsheet->select('threed');
-    $tabsheet->assign();
-    
-    $img_infos = get_image_infos($image_id, true);
-    $file_path = $img_infos['path'];
-    $ext = get_extension($file_path);
-
-    if($ext == 'zip' or $img_infos['pano_type'] != 'none')
-    {
-        $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/pano_admin.tpl');
-    	$page_title = l10n('Edit Panorama');
-    }
-    elseif($ext == 'jpg') // jpg cant be either pano or stereoscopic
-    {
-        $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/image_jpg_admin.tpl');
-        $page_title = l10n('Edit photo');
-    }
-    else 
-    {
-        $template->set_filename('threed_admin_content', THREED_PATH .'admin/template/image_admin.tpl');
-        $page_title = l10n('Edit photo');
-    }
-    $template->assign(array(
-        'ADMIN_PAGE_TITLE' => $page_title .' <span class="image-id">#'.$image_id.'</span>',
-        'PWG_TOKEN'=> get_pwg_token(),
-        'is3D' => $img_infos['is3D'],
-        'pano_type' => $img_infos['pano_type'],
-        'image_id' => (int)$image_id,
-        'threed' => $conf['threed'],
-        'theme' => $themeconf,
-    ));
-}
+	// template
+	$template->set_filename('threed_admin_content', THREED_PATH .'admin/template/config.tpl');
+	$template->assign(array(
+		'threed' => $conf['threed'],
+		'theme' => $themeconf,
+	));
 
 if(count($errors) != 0)
 {
@@ -228,60 +60,5 @@ if(count($errors) != 0)
 }
 $template->assign_var_from_handle('ADMIN_CONTENT', 'threed_admin_content');
 unset($errors);
-
-
-function prepare_krpano ($file_path)
-{
-    global $errors;
-    $dir = dirname($file_path);
-    $files = scandir($dir . '/panos');
-    if($files)
-    {
-        $files = array_diff($files, array('.', '..'));
-        foreach($files as $file)
-        {
-            if(is_dir($dir . '/panos/' . $file))
-            {
-                // Copy the krpano thumb.jpg file in pwg_representative sub-directory
-                $representative_file_path = dirname($file_path).'/pwg_representative';
-                prepare_directory($representative_file_path);
-                $jpgpath = get_filename_wo_extension(basename($file_path)).'.jpg';
-                if (!copy ($dir . '/panos/' . $file . '/thumb.jpg', $representative_file_path . '/' . $jpgpath))
-                {
-                    $errors[] = l10n('Representative image creation failed');
-                }
-            }
-        }
-        $files = glob($dir . "/*.xml");
-        if(count($files) > 0)
-        {
-            $content = file_get_contents($files[0]);
-            $content = str_replace(array('url="skin/', 'url="plugins/'), array('url="%VIEWER%/skin/', 'url="%VIEWER%/plugins/'), $content);
-            file_put_contents($files[0], $content);
-            // rename xml file
-            rename($files[0], get_filename_wo_extension($file_path).'.xml');
-        }
-        else
-        {
-            $errors[] = l10n('No xml file found');
-        }
-    }
-    else
-    {
-        $errors[] = l10n('The archive format is not krpano compatible');
-    }
-}
-
-
-function prepare_pannellum($file_path)
-{
-    
-}
-
-function prepare_3dvista($file_path)
-{
-    
-}
-
 
 ?>
